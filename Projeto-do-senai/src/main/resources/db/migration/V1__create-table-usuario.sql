@@ -1,0 +1,8 @@
+CREATE TABLE usuario(
+    id_usuario SERIAL PRIMARY KEY,
+    nome VARCHAR(50),
+    login VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(5) NOT NULL,
+    ativo TINYINT NOT NULL DEFAULT 1,
+    perfil VARCHAR(10) NOT NULL
+)
