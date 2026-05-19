@@ -1,17 +1,15 @@
-CREATE TABLE ocorrencia(
-    id_ocorrencia SERIAL PRIMARY KEY,
-    id_turma INTEGER NOT NULL,
-    id_aluno INTEGER NOT NULL,
-    id_categoria_ocorrencia INTEGER NOT NULL,
-    id_tipo_ocorrencia INTEGER NOT NULL,
-    data_da_ocorrencia DATE NOT NULL,
-    hora TIME NOT NULL,
-    descricao_da_ocorrencia VARCHAR(100) NOT NULL,
+CREATE TABLE occurrence(
+    id_occurrence SERIAL PRIMARY KEY,
+    id_class INTEGER NOT NULL,
+    id_student INTEGER NOT NULL,
+    id_category_occurrence INTEGER NOT NULL,
+    id_type_of_occurrence INTEGER NOT NULL,
+    date_occurrence DATE NOT NULL,
+    time TIME NOT NULL,
+    description_of_occurrence VARCHAR(100) NOT NULL,
 
-    CONSTRAINT fk_turma FOREIGN KEY(id_turma) REFERENCES turma(id_turma),
-    CONSTRAINT fk_aluno FOREIGN KEY(id_aluno) REFERENCES aluno(id_aluno),
-    CONSTRAINT fk_categoria_ocorrenca FOREIGN KEY(id_categoria_ocorrencia) REFERENCES categoria_ocorrencia(id_categoria_ocorrencia),
-    CONSTRAINT fk_tipo_ocorrencia FOREIGN KEY(id_tipo_ocorrencia) REFERENCES tipo_ocorrencia(id_tipo_ocorrencia),
-
-
-)
+    CONSTRAINT fk_class FOREIGN KEY(id_class) REFERENCES class(id_class),
+    CONSTRAINT fk_student FOREIGN KEY(id_student) REFERENCES student(id_student),
+    CONSTRAINT fk_category_occurrence FOREIGN KEY(id_category_occurrence) REFERENCES category_occurrence(id_category_occurrence),
+    CONSTRAINT fk_type_of_occurrence FOREIGN KEY(id_type_of_occurrence) REFERENCES type_of_occurrence(id_type_of_occurrence)
+);
