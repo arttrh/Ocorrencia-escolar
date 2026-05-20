@@ -1,6 +1,6 @@
 package br.com.project_sena.adapter.out.repository.entity;
 
-import br.com.project_sena.application.core.domain.enums.Perfil;
+import br.com.project_sena.application.core.domain.enums.PerfilEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class UsuarioEntity implements UserDetails {
     private boolean active = true;
 
     @Enumerated(EnumType.STRING)
-    private Perfil perfil;
+    private PerfilEnum perfil;
 
 
     @Override

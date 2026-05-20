@@ -1,6 +1,6 @@
 package br.com.project_sena.application.core.domain.model;
 
-import br.com.project_sena.application.core.domain.enums.Perfil;
+import br.com.project_sena.application.core.domain.enums.PerfilEnum;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +14,7 @@ public class Usuario implements UserDetails {
     private String password;
     private String login;
     private boolean active = true;
-    private Perfil perfil;
+    private PerfilEnum perfil;
 
 
     @Override
@@ -52,7 +52,7 @@ public class Usuario implements UserDetails {
         return true;
     }
 
-    public Usuario(Long id, String name, String password, String login, boolean active, Perfil perfil) {
+    public Usuario(Long id, String name, String password, String login, boolean active, PerfilEnum perfil) {
         this.id = id;
         this.name = name;
         this.password = password;
@@ -69,43 +69,19 @@ public class Usuario implements UserDetails {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public boolean isActive() {
         return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
     }
 
     public String getLogin() {
         return login;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Perfil getPerfil() {
+    public PerfilEnum getPerfil() {
         return perfil;
-    }
-
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
     }
 }
