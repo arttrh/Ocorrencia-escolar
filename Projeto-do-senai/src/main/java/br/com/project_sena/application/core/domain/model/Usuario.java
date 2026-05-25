@@ -1,8 +1,10 @@
 package br.com.project_sena.application.core.domain.model;
 
 import br.com.project_sena.application.core.domain.enums.PerfilEnum;
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -13,13 +15,19 @@ public class Usuario implements UserDetails {
     private String name;
     private String password;
     private String login;
-    private boolean active = true;
+
+    //Enums
+    private UsuarioEnum usuarioEnum;
     private PerfilEnum perfil;
 
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+    public Usuario(Long id, String name, String password, String login, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.login = login;
+        this.perfil = perfil;
+        this.usuarioEnum = usuarioEnum;
     }
 
     @Override
@@ -52,13 +60,9 @@ public class Usuario implements UserDetails {
         return true;
     }
 
-    public Usuario(Long id, String name, String password, String login, boolean active, PerfilEnum perfil) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.login = login;
-        this.active = active;
-        this.perfil = perfil;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
     }
 
     public Usuario() {
@@ -67,10 +71,6 @@ public class Usuario implements UserDetails {
 
     public Long getId() {
         return id;
-    }
-
-    public boolean isActive() {
-        return active;
     }
 
     public String getLogin() {
@@ -83,5 +83,42 @@ public class Usuario implements UserDetails {
 
     public PerfilEnum getPerfil() {
         return perfil;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPerfil(PerfilEnum perfil) {
+        this.perfil = perfil;
+    }
+
+    public UsuarioEnum getUsuarioEnum() {
+        return usuarioEnum;
+    }
+
+    public void setUsuarioEnum(UsuarioEnum usuarioEnum) {
+        this.usuarioEnum = usuarioEnum;
+    }
+
+    public void atualizarUsuario(Usuario usuario) {
+        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
+            this.password = usuario.getPassword();
+        }
+        if (usuario.getLogin() != null && !usuario.getLogin().isBlank()) {
+            this.login = usuario.getLogin();
+        }
+    }
+
+    public void excluir(UsuarioEnum usuarioEnum) {
+        this.usuarioEnum = UsuarioEnum.INVATIVO;
     }
 }
