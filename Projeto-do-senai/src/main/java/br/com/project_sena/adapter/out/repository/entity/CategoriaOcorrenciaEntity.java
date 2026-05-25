@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "category-occurrence")
+@Table(name = "category_occurrence")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,4 +18,5 @@ public class CategoriaOcorrenciaEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nameCategory;
+
 }
