@@ -14,7 +14,7 @@ public record OccurrenceRequestDTO(
         @NotNull
         Long categoryId,
         @NotNull
-        Long occurenceTypeId,
+        Long occurenceId,
         @NotNull
         LocalDate date,
         @NotNull
