@@ -1,5 +1,7 @@
 package br.com.project_sena.application.core.domain.model;
 
+import br.com.project_sena.application.core.domain.enums.AlunoEnum;
+
 import java.time.LocalDate;
 
 public class Aluno {
@@ -8,14 +10,18 @@ public class Aluno {
     private String name;
     private LocalDate dateBirth;
 
+    //Enum
+    private AlunoEnum alunoEnum;
+
     public Aluno() {
     }
 
-    public Aluno(Long id, String photo, String name, LocalDate dateBirth) {
+    public Aluno(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum) {
         this.id = id;
         this.photo = photo;
         this.name = name;
         this.dateBirth = dateBirth;
+        this.alunoEnum = alunoEnum;
     }
 
     public Long getId() {
@@ -32,5 +38,9 @@ public class Aluno {
 
     public LocalDate getDateBirth() {
         return dateBirth;
+    }
+
+    public AlunoEnum getAlunoEnum() {
+        return alunoEnum;
     }
 }

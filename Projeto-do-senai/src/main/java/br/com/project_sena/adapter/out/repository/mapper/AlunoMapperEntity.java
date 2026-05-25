@@ -11,7 +11,8 @@ public class AlunoMapperEntity {
                 entity.getId(),
                 entity.getPhoto(),
                 entity.getName(),
-                entity.getDateBirth()
+                entity.getDateBirth(),
+                entity.getAlunoEnum()
         );
     }
 
@@ -20,7 +21,8 @@ public class AlunoMapperEntity {
                 aluno.getId(),
                 aluno.getPhoto(),
                 aluno.getName(),
-                aluno.getDateBirth()
+                aluno.getDateBirth(),
+                aluno.getAlunoEnum()
         );
     }
 }
