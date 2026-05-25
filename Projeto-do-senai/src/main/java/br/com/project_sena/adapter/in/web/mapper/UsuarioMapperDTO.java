@@ -1,9 +1,11 @@
 package br.com.project_sena.adapter.in.web.mapper;
 
 import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListDTO;
 import br.com.project_sena.application.core.domain.model.Usuario;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,8 +18,8 @@ public class UsuarioMapperDTO {
                 dto.name(),
                 dto.password(),
                 dto.login(),
-                true,
-                dto.perfil()
+                dto.perfi(),
+                dto.usuarioEnum()
         );
     }
 
@@ -27,17 +29,29 @@ public class UsuarioMapperDTO {
                 usuario.getId(),
                 usuario.getName(),
                 usuario.getLogin(),
-                usuario.getPerfil()
+                usuario.getPerfil(),
+                usuario.getUsuarioEnum()
         );
     }
 
+    // Devolvendo a lista para o Usuario
     public UserListDTO toList(Usuario list){
         return new UserListDTO(
                 list.getId(),
                 list.getName(),
-                list.isActive(),
-                list.getPerfil()
+                list.getPerfil(),
+                list.getUsuarioEnum()
         );
     }
 
+    public Usuario toDomainUpdate(UserUpdateDTO dto){
+      return new Usuario(
+              null,
+              null,
+              dto.password(),
+              null,
+              dto.perfil(),
+                null
+      );
+    }
 }
