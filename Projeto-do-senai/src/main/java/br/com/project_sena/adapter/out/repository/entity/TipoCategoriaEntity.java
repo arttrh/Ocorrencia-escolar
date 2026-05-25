@@ -12,10 +12,17 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TipoOcorrenciaEntity {
+public class TipoCategoriaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nameOccurrence;
+
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private CategoriaOcorrenciaEntity categorias;
+
+    public TipoCategoriaEntity(Long id, String nameOccurrence) {
+    }
 }
