@@ -1,6 +1,6 @@
 package br.com.project_sena.application.core.domain.enums;
 
 public enum TurmaEnum {
-    INATIVA,
+    CANCELADA,
     ATIVA
 }
