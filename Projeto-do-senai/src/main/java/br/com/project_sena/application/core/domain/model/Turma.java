@@ -1,17 +1,23 @@
 package br.com.project_sena.application.core.domain.model;
 
+import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+
 public class Turma {
 
     private Long id;
-    private String class_name;
+    private String className;
     private String shift;
     private Integer classYear;
 
-    public Turma(Long id, String class_name, String shift, Integer classYear) {
+    //Enums
+    private TurmaEnum turmaEnum;
+
+    public Turma(Long id, String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
         this.id = id;
-        this.class_name = class_name;
+        this.className = className;
         this.shift = shift;
         this.classYear = classYear;
+        this.turmaEnum = turmaEnum;
     }
 
     public Turma() {
@@ -21,8 +27,8 @@ public class Turma {
         return id;
     }
 
-    public String getClass_name() {
-        return class_name;
+    public String getClassName() {
+        return className;
     }
 
     public String getShift() {
@@ -31,5 +37,9 @@ public class Turma {
 
     public Integer getClassYear() {
         return classYear;
+    }
+
+    public TurmaEnum getTurmaEnum() {
+        return turmaEnum;
     }
 }
