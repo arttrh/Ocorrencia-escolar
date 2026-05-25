@@ -1,5 +1,6 @@
 package br.com.project_sena.adapter.out.repository.entity;
 
+import br.com.project_sena.application.core.domain.enums.OcorrenciaEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,9 +35,13 @@ public class OcorrenciaEntity {
 
     @ManyToOne
     @JoinColumn(name = "id_type_of_occurrence")
-    private TipoOcorrenciaEntity occurrenceType;
+    private TipoCategoriaEntity occurrenceType;
 
     private LocalDate dataOcorrencia;
     private LocalTime time;
     private String descricaoDaOcorrencia;
+
+    //Enums
+    @Enumerated(EnumType.STRING)
+    private OcorrenciaEnum ocorrenciaEnum;
 }

@@ -31,7 +31,8 @@ public class OcorrenciaMapperEntity {
                 tipoOcorrenciaMapper.toDomain(entity.getOccurrenceType()),
                 entity.getDataOcorrencia(),
                 entity.getTime(),
-                entity.getDescricaoDaOcorrencia()
+                entity.getDescricaoDaOcorrencia(),
+                entity.getOcorrenciaEnum()
         );
     }
 
@@ -44,7 +45,8 @@ public class OcorrenciaMapperEntity {
                 tipoOcorrenciaMapper.toEntity(ocorrencia.getOccurrenceType()),
                 ocorrencia.getDataOcorrencia(),
                 ocorrencia.getTime(),
-                ocorrencia.getDescricaoDaOcorrencia()
+                ocorrencia.getDescricaoDaOcorrencia(),
+                ocorrencia.getOcorrenciaEnum()
         );
     }
 }

@@ -1,5 +1,9 @@
 package br.com.project_sena.application.core.domain.model;
 
+import br.com.project_sena.application.core.domain.enums.OcorrenciaEnum;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -14,6 +18,9 @@ public class Ocorrencia {
     private LocalTime time;
     private String descricaoDaOcorrencia;
 
+    //Enums
+    private OcorrenciaEnum ocorrenciaEnum;
+
     public Ocorrencia() {
     }
 
@@ -24,7 +31,8 @@ public class Ocorrencia {
                       TipoOcorrencia occurrenceType,
                       LocalDate dataOcorrencia,
                       LocalTime time,
-                      String descricaoDaOcorrencia) {
+                      String descricaoDaOcorrencia,
+                      OcorrenciaEnum ocorrenciaEnum) {
         this.id = id;
         this.turma = turma;
         this.student = student;
@@ -33,6 +41,7 @@ public class Ocorrencia {
         this.dataOcorrencia = dataOcorrencia;
         this.time = time;
         this.descricaoDaOcorrencia = descricaoDaOcorrencia;
+        this.ocorrenciaEnum = ocorrenciaEnum;
     }
 
     public Long getId() {
@@ -65,5 +74,9 @@ public class Ocorrencia {
 
     public String getDescricaoDaOcorrencia() {
         return descricaoDaOcorrencia;
+    }
+
+    public OcorrenciaEnum getOcorrenciaEnum() {
+        return ocorrenciaEnum;
     }
 }
