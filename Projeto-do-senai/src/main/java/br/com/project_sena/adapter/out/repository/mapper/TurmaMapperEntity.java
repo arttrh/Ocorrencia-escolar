@@ -9,18 +9,20 @@ public class TurmaMapperEntity {
     public Turma toDomain(TurmaEntity entity){
         return new Turma(
                 entity.getId(),
-                entity.getClass_name(),
+                entity.getClassName(),
                 entity.getShift(),
-                entity.getClassYear()
+                entity.getClassYear(),
+                entity.getTurmaEnum()
         );
     }
 
     public TurmaEntity toEntity(Turma turma){
         return new TurmaEntity(
                 turma.getId(),
-                turma.getClass_name(),
+                turma.getClassName(),
                 turma.getShift(),
-                turma.getClassYear()
+                turma.getClassYear(),
+                turma.getTurmaEnum()
         );
     }
 }
