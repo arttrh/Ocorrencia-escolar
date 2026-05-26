@@ -3,7 +3,9 @@ package br.com.project_sena.adapter.out.repository;
 import br.com.project_sena.adapter.out.repository.mapper.TurmaMapperEntity;
 import br.com.project_sena.adapter.out.repository.persistence.TurmaJpaRepository;
 import br.com.project_sena.application.port.out.TurmaRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TurmaRepositoryImpl implements TurmaRepository {
 
     private final TurmaJpaRepository turmaJpaRepository;

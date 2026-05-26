@@ -3,7 +3,9 @@ package br.com.project_sena.adapter.out.repository;
 import br.com.project_sena.adapter.out.repository.mapper.OcorrenciaMapperEntity;
 import br.com.project_sena.adapter.out.repository.persistence.OcorrenciaJpaRepository;
 import br.com.project_sena.application.port.out.OcorrenciaRepository;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OcorrenciaRepositoryImpl implements OcorrenciaRepository {
 
     private final OcorrenciaJpaRepository ocorrenciaJpaRepository;
