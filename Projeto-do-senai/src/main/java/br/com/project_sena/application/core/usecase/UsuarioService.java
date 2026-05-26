@@ -17,7 +17,7 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
     private UsuarioMapperEntity usuarioMapperEntity;
 
-    public UsuarioService(UsuarioRepositoryImpl repositoryUsuario, PasswordEncoder passwordEncoder, UsuarioMapperEntity usuarioMapperEntity) {
+    public UsuarioService(UsuarioRepository repositoryUsuario, PasswordEncoder passwordEncoder, UsuarioMapperEntity usuarioMapperEntity) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.usuarioMapperEntity = usuarioMapperEntity;
@@ -43,7 +43,7 @@ public class UsuarioService {
 
     public Usuario atualizar(Usuario usuario, Long id) {
         Usuario usuarioBucar = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
-        usuario.atualizarUsuario(usuarioBucar);
+        usuarioBucar.atualizarUsuario(usuario);
         return usuarioRepository.save(usuarioBucar);
     }
 
