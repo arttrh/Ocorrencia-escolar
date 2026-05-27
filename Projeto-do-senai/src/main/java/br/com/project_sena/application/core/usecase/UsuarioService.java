@@ -51,4 +51,10 @@ public class UsuarioService {
         usuario.excluir(UsuarioEnum.INVATIVO);
         usuarioRepository.save(usuario);
     }
+
+    public void reativar(Long id){
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
+        usuario.reativar(UsuarioEnum.ATIVO);
+        usuarioRepository.save(usuario);
+    }
 }
