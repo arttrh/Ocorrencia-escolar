@@ -4,27 +4,29 @@ import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
 import br.com.project_sena.adapter.in.web.mapper.UsuarioMapperDTO;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.core.usecase.UsuarioService;
-import br.com.project_sena.application.port.in.ModelDomainController;
+import br.com.project_sena.application.port.in.UsuarioDomainModelController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
 
-
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController implements ModelDomainController<
+public class UsuarioController implements UsuarioDomainModelController<
         UserRegisterDTO,
         UserListDTO,
+        UserListInativosDTO,
         UserUpdateDTO,
         Void,
         UserDetailsDTO,
-        Long
-        > {
+        Long> {
 
     private UsuarioService usuarioService;
     private UsuarioMapperDTO mapper;
@@ -44,9 +46,15 @@ public class UsuarioController implements ModelDomainController<
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserListDTO>> listar(Pageable pageable) {
+    public ResponseEntity<Page<UserListDTO>> listar(@PageableDefault(size = 10, sort = "perfil", page = 0, direction = Sort.Direction.DESC) Pageable pageable) {
         Page <Usuario> usuario = usuarioService.listar(pageable);
         return ResponseEntity.ok(usuario.map(mapper::toList));
+    }
+
+    @GetMapping("/inativos")
+    public ResponseEntity<Page<UserListInativosDTO>> listarInativos(@PageableDefault(size = 10, sort = "perfil", page = 0, direction = Sort.Direction.DESC) Pageable pageable){
+        Page<Usuario> usuario = usuarioService.listarInvativos(pageable);
+        return ResponseEntity.ok(usuario.map(mapper::toListInativo));
     }
 
     @GetMapping("/{id}")
@@ -56,7 +64,7 @@ public class UsuarioController implements ModelDomainController<
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/atualizar/{id}")
     public ResponseEntity<UserDetailsDTO> atualizar(
             @RequestBody @Valid UserUpdateDTO dto,
             @PathVariable Long id) {
@@ -65,9 +73,15 @@ public class UsuarioController implements ModelDomainController<
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id) {
         usuarioService.excluir(id);
         return ResponseEntity.noContent().build();
-        }
+    }
+
+    @PatchMapping("/reativar/{id}")
+    public ResponseEntity<Void> reativar(@PathVariable Long id){
+        usuarioService.reativar(id);
+        return ResponseEntity.noContent().build();
+    }
 }
