@@ -13,19 +13,27 @@ import java.util.List;
 public class Usuario implements UserDetails {
     private Long id;
     private String name;
-    private String password;
     private String login;
+    private String password;
 
     //Enums
     private UsuarioEnum usuarioEnum;
     private PerfilEnum perfil;
 
 
-    public Usuario(Long id, String name, String password, String login, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
+    public Usuario(Long id, String name,String login, String password, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
         this.id = id;
         this.name = name;
-        this.password = password;
         this.login = login;
+        this.password = password;
+        this.perfil = perfil;
+        this.usuarioEnum = usuarioEnum;
+    }
+
+    public Usuario(String name, String login, String password, PerfilEnum perfil, UsuarioEnum usuario) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
         this.perfil = perfil;
         this.usuarioEnum = usuarioEnum;
     }
@@ -63,10 +71,6 @@ public class Usuario implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
-    }
-
-    public Usuario() {
-
     }
 
     public Long getId() {

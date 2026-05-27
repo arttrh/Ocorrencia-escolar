@@ -1,5 +1,4 @@
 package br.com.project_sena.application.core.usecase;
-import br.com.project_sena.adapter.out.repository.UsuarioRepositoryImpl;
 import br.com.project_sena.adapter.out.repository.mapper.UsuarioMapperEntity;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
@@ -17,7 +16,7 @@ public class UsuarioService {
     private PasswordEncoder passwordEncoder;
     private UsuarioMapperEntity usuarioMapperEntity;
 
-    public UsuarioService(UsuarioRepository repositoryUsuario, PasswordEncoder passwordEncoder, UsuarioMapperEntity usuarioMapperEntity) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, UsuarioMapperEntity usuarioMapperEntity) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
         this.usuarioMapperEntity = usuarioMapperEntity;

@@ -34,7 +34,7 @@ public class UsuarioController implements ModelDomainController<
         this.mapper = mapper;
     }
 
-    @PostMapping
+    @PostMapping("/cadastrar")
     public ResponseEntity<UserDetailsDTO> cadastrar(
             @RequestBody @Valid UserRegisterDTO dto) {
         Usuario domain = mapper.toDomain(dto);

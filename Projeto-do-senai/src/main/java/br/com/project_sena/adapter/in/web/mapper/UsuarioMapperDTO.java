@@ -4,8 +4,8 @@ import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,12 +14,11 @@ public class UsuarioMapperDTO {
     // Front-End vai mandar um JSON e vai ser convertido para domain.
     public Usuario toDomain(UserRegisterDTO dto){
         return new Usuario(
-                null,
                 dto.name(),
-                dto.password(),
                 dto.login(),
-                dto.perfi(),
-                dto.usuarioEnum()
+                dto.password(),
+                dto.perfil(),
+                dto.usuario()
         );
     }
 
@@ -51,7 +50,7 @@ public class UsuarioMapperDTO {
               dto.password(),
               null,
               dto.perfil(),
-                null
+              UsuarioEnum.ATIVO
       );
     }
 }
