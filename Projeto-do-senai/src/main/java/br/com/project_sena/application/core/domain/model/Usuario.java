@@ -17,7 +17,7 @@ public class Usuario implements UserDetails {
     private String password;
 
     //Enums
-    private UsuarioEnum usuarioEnum;
+    private UsuarioEnum usuarioEnum = UsuarioEnum.ATIVO;
     private PerfilEnum perfil;
 
 
@@ -117,12 +117,16 @@ public class Usuario implements UserDetails {
         if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
             this.password = usuario.getPassword();
         }
-        if (usuario.getLogin() != null && !usuario.getLogin().isBlank()) {
-            this.login = usuario.getLogin();
+        if (usuario.perfil != null){
+            this.perfil = usuario.getPerfil();
         }
     }
 
     public void excluir(UsuarioEnum usuarioEnum) {
         this.usuarioEnum = UsuarioEnum.INVATIVO;
+    }
+
+    public void reativar(UsuarioEnum usuarioEnum){
+        this.usuarioEnum = UsuarioEnum.ATIVO;
     }
 }
