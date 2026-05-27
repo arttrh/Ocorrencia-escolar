@@ -4,6 +4,7 @@ import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import org.springframework.stereotype.Component;
@@ -33,13 +34,25 @@ public class UsuarioMapperDTO {
         );
     }
 
-    // Devolvendo a lista para o Usuario
+    // Devolvendo a lista para o Usuarios Ativos
     public UserListDTO toList(Usuario list){
         return new UserListDTO(
                 list.getId(),
                 list.getName(),
+                list.getLogin(),
                 list.getPerfil(),
                 list.getUsuarioEnum()
+        );
+    }
+
+    // Devolve a lista para Usuarios Inativos
+    public UserListInativosDTO toListInativo(Usuario list){
+        return new UserListInativosDTO(
+                list.getId(),
+                list.getName(),
+                list.getLogin(),
+                list.getUsuarioEnum(),
+                list.getPerfil()
         );
     }
 
