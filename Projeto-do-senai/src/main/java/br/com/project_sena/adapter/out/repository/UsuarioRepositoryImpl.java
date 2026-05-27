@@ -6,6 +6,7 @@ import br.com.project_sena.adapter.out.repository.persistence.UsuarioJpaReposito
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
+import br.com.project_sena.exception.type.UsuarioNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -53,5 +54,12 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public UserDetails loadUserByUsername(String login) {
         return null;
+    }
+
+    @Override
+    public void reativar(Long id) {
+        UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
+        entity.setUsuarioEnum(UsuarioEnum.ATIVO);
+        jpaRepository.save(entity);
     }
 }
