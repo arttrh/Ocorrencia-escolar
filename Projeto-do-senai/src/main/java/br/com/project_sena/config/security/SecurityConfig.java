@@ -27,7 +27,8 @@ public class SecurityConfig {
                         "/usuario/{id}",
                         "/usuario",
                         "/usuario/inativos",
-                        "/usuario/reativar/{id}").permitAll().anyRequest().authenticated())
+                        "/usuario/reativar/{id}",
+                        "/login").permitAll().anyRequest().authenticated())
                 .build();
     }
 }
