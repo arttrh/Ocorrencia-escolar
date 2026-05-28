@@ -18,8 +18,7 @@ public class UsuarioMapperDTO {
                 dto.name(),
                 dto.login(),
                 dto.password(),
-                dto.perfil(),
-                dto.usuario()
+                dto.perfil()
         );
     }
 

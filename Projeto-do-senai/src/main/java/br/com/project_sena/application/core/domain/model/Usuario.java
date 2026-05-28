@@ -30,12 +30,11 @@ public class Usuario implements UserDetails {
         this.usuarioEnum = usuarioEnum;
     }
 
-    public Usuario(String name, String login, String password, PerfilEnum perfil, UsuarioEnum usuario) {
+    public Usuario(String name, String login, String password, PerfilEnum perfil) {
         this.name = name;
         this.login = login;
         this.password = password;
         this.perfil = perfil;
-        this.usuarioEnum = usuarioEnum;
     }
 
     @Override
@@ -129,4 +128,5 @@ public class Usuario implements UserDetails {
     public void reativar(UsuarioEnum usuarioEnum){
         this.usuarioEnum = UsuarioEnum.ATIVO;
     }
+
 }
