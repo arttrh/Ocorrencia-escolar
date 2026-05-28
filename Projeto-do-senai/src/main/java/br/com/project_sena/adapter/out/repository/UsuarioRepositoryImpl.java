@@ -9,7 +9,6 @@ import br.com.project_sena.application.port.out.UsuarioRepository;
 import br.com.project_sena.exception.type.UsuarioNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -24,7 +23,6 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
         this.jpaRepository = jpaRepository;
         this.mapperEntity = mapperEntity;
     }
-
 
     @Override
     public Usuario save(Usuario usuario) {
@@ -52,14 +50,16 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) {
-        return null;
-    }
-
-    @Override
     public void reativar(Long id) {
         UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
         entity.setUsuarioEnum(UsuarioEnum.ATIVO);
         jpaRepository.save(entity);
+    }
+
+    @Override
+    public Usuario fidByLogin(String login) {
+        return jpaRepository.findByLogin(login)
+                .map(mapperEntity::toDomain)
+                .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
 }
