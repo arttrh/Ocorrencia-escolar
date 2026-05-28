@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/ocorrenciaescolar
     username: postgres
-    password: 27032008
+    password: ${MYSQL_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -14,3 +14,7 @@ spring:
 
     flyway:
       enabled: true
+  security:
+    token:
+      secret:
+        ${JWT_SECRET}
