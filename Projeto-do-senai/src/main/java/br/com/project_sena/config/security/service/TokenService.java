@@ -10,7 +10,7 @@ public class TokenService {
 
     private String secret = "{JWT_SECRET}";
 
-    public String gerarToken(Usuario usuario) {
+    public TokenDTO gerarToken(Usuario usuario) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
@@ -19,7 +19,7 @@ public class TokenService {
                     .withClaim("id", usuario.getId())
                     .withClaim("Perfil", usuario.getPerfil().name())
                     .sign(algorithm);
-            return token;
+            return new TokenDTO(token);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
