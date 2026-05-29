@@ -19,13 +19,11 @@ import java.io.IOException;
 @Configuration
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private final TokenService token;
-    private final AutenticacaoService service;
+    private final TokenService service;
     private final UsuarioJpaRepository repository;
 
-    public SecurityFilter(TokenService token, AutenticacaoService service, UsuarioJpaRepository repository) {
+    public SecurityFilter(TokenService token, UsuarioJpaRepository repository) {
         this.token = token;
-        this.service = service;
         this.repository = repository;
     }
 
