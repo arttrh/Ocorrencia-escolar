@@ -39,13 +39,13 @@ public class SecurityFilter extends OncePerRequestFilter {
                 var tokenLimpo = authHeader.replace("Bearer ", "");
                 var login = token.validarToken(tokenLimpo);
                 UsuarioEntity usuario = repository.findByLogin(login).orElseThrow();
-                UsernamePasswordAuthenticationToken authentication =
+                UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
                                 usuario,
                                 null,
                                 usuario.getAuthorities()
                         );
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(auth);
             }
     }
 }
