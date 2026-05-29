@@ -23,4 +23,4 @@ jobs:
           distribution: 'temurin'
 
       - name: Build com Maven
-        run: cd Projeto-do-senai && ./mvnw clean package -DskipTests
+        run: cd Projeto-do-senai && chmod +x mvnw && ./mvnw clean package -DskipTests
