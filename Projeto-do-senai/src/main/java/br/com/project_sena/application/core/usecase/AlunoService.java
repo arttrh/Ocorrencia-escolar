@@ -12,5 +12,28 @@ public class AlunoService {
         this.alunoRepository = alunoRepository;
     }
 
+    public Page<Aluno> listar(Pageable paginacao){
+        Aluno aluno = alunoRepository.fidAll(paginacao)
+        return aluno;
+    }
+
+    public Aluno atualizar(Long id){
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RunTimeException(""));
+        Aluno alunoAtualizado = aluno.atualizarAluno();
+        alunoRepository.save(alunoAtualizado);
+        return alunoAtualizado;
+    }
+
+    public void excluir(Long id){
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RunTimeException(""));
+        aluno.excluir();
+        alunoRepository.save(aluno);
+    }
+    
+    public void reativar(Long id){
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RunTimeException(""));
+        aluno.reativar();
+        alunoRepository.save(aluno);
+    }
 
 }
