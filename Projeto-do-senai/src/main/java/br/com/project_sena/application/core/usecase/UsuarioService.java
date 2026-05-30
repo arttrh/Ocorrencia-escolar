@@ -48,7 +48,7 @@ public class UsuarioService {
 
     public void excluir(Long id) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
-        usuario.excluir(UsuarioEnum.INVATIVO);
+        usuario.excluir();
         usuarioRepository.save(usuario);
     }
 
