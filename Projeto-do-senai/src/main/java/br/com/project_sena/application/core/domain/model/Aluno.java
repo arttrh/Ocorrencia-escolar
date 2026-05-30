@@ -43,4 +43,24 @@ public class Aluno {
     public AlunoEnum getAlunoEnum() {
         return alunoEnum;
     }
+
+    public void atualizarAluno(Aluno aluno){
+        if(aluno.getPhoto() != null && !aluno.getPhoto().isBlank()){
+            this.photo) = aluno.getPhoto();
+        }
+        if(aluno.getName() != null && !aluno.getName().isBlank()){
+            this.name = aluno.getName();
+        }
+        if(aluno.getDateBirth() != null && !aluno.getDateBirth().isBlank()){
+            this.dateBirth = aluno.getDateBirth();
+        }
+    }
+
+    public void excluir(){
+        this.AlunoEnum = AlunoEnum.INVATIVO;
+    }
+
+    public void reativar(){
+        this.AlunoEnum = AlunoEnum.ATIVO;
+    }
 }
