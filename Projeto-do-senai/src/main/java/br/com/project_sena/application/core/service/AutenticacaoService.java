@@ -28,13 +28,13 @@ public class AutenticacaoService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        return usuarioRepository.fidByLogin(login);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return usuarioRepository.findByEmail(email);
     }
 
     public TokenDTO logar(LoginDTO dto) throws LoginException {
         try {
-            Usuario usuario = usuarioRepository.fidByLogin(dto.login());
+            Usuario usuario = usuarioRepository.findByEmail(dto.email());
             boolean senhaCorreta = encoder.matches(dto.password(), usuario.getPassword());
             if (!senhaCorreta) {
                 throw new SenhaException("Senha invalida por favor digite novamente");
