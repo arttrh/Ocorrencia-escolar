@@ -10,7 +10,7 @@ public class UsuarioMapperEntity {
         return new Usuario(
                 entity.getId(),
                 entity.getName(),
-                entity.getLogin(),
+                entity.getEmail(),
                 entity.getPassword(),
                 entity.getPerfil(),
                 entity.getUsuarioEnum()
@@ -21,7 +21,7 @@ public class UsuarioMapperEntity {
         return new UsuarioEntity(
                 usuario.getId(),
                 usuario.getName(),
-                usuario.getLogin(),
+                usuario.getEmail(),
                 usuario.getPassword(),
                 usuario.getPerfil(),
                 usuario.getUsuarioEnum()

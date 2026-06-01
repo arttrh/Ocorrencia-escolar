@@ -13,30 +13,30 @@ import java.util.List;
 public class Usuario implements UserDetails {
     private Long id;
     private String name;
-    private String login;
+    private String email;
     private String password;
 
     //Enums
     private UsuarioEnum usuarioEnum = UsuarioEnum.ATIVO;
     private PerfilEnum perfil;
 
-
-    public Usuario(Long id, String name,String login, String password, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
+    public Usuario(Long id, String name, String email, String password, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
         this.id = id;
         this.name = name;
-        this.login = login;
+        this.email = email;
         this.password = password;
         this.perfil = perfil;
         this.usuarioEnum = usuarioEnum;
     }
 
-    public Usuario(String name, String login, String password, PerfilEnum perfil) {
+    public Usuario(String name, String email, String password, PerfilEnum perfil) {
         this.name = name;
-        this.login = login;
+        this.email = email;
         this.password = password;
         this.perfil = perfil;
     }
 
+    //UserDetails
     @Override
     public @Nullable String getPassword() {
         return password;
@@ -44,7 +44,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
@@ -76,8 +76,8 @@ public class Usuario implements UserDetails {
         return id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
     public String getName() {
@@ -96,8 +96,8 @@ public class Usuario implements UserDetails {
         this.password = password;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPerfil(PerfilEnum perfil) {
@@ -113,11 +113,15 @@ public class Usuario implements UserDetails {
     }
 
     public void atualizarUsuario(Usuario usuario) {
-        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
-            this.password = usuario.getPassword();
-        }
-        if (usuario.perfil != null){
+        if (usuario.getPerfil() != null){
             this.perfil = usuario.getPerfil();
+        }
+        if (usuario.getEmail() != null && !usuario.getEmail().isBlank()){
+            this.email = usuario.getEmail();
+        }
+
+        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()){
+            this.password = usuario.getPassword();
         }
     }
 

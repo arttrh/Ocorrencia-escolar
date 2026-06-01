@@ -6,7 +6,7 @@ import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 public record UserDetailsDTO(
         Long userId,
         String name,
-        String login,
+        String email,
         PerfilEnum perfil,
         UsuarioEnum usuarioEnum
 ){

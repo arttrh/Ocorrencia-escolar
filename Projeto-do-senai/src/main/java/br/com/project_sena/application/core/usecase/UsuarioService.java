@@ -14,12 +14,10 @@ public class UsuarioService {
 
     private UsuarioRepository usuarioRepository;
     private PasswordEncoder passwordEncoder;
-    private UsuarioMapperEntity usuarioMapperEntity;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, UsuarioMapperEntity usuarioMapperEntity) {
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.usuarioMapperEntity = usuarioMapperEntity;
     }
 
     public Usuario cadastrar(Usuario dados) {
@@ -40,15 +38,16 @@ public class UsuarioService {
         return usuarioRepository.findAllByUsuarioEnum(UsuarioEnum.INVATIVO, paginacao);
     }
 
-    public Usuario atualizar(Usuario usuario, Long id) {
+    public Usuario atualizar(Usuario dados, Long id) {
         Usuario usuarioBucar = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
-        usuarioBucar.atualizarUsuario(usuario);
+        usuarioBucar.atualizarUsuario(dados);
+        usuarioBucar.setPassword(passwordEncoder.encode(dados.getPassword()));
         return usuarioRepository.save(usuarioBucar);
     }
 
     public void excluir(Long id) {
         Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
-        usuario.excluir();
+        usuario.excluir(UsuarioEnum.INVATIVO);
         usuarioRepository.save(usuario);
     }
 

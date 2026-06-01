@@ -26,7 +26,7 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "id_usuario")
     private Long id;
     private String name;
-    private String login;
+    private String email;
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +43,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override

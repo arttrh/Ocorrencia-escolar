@@ -3,7 +3,7 @@ package br.com.project_sena.adapter.in.web.mapper;
 import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
-import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
@@ -16,7 +16,7 @@ public class UsuarioMapperDTO {
     public Usuario toDomain(UserRegisterDTO dto){
         return new Usuario(
                 dto.name(),
-                dto.login(),
+                dto.email(),
                 dto.password(),
                 dto.perfil()
         );
@@ -27,18 +27,18 @@ public class UsuarioMapperDTO {
         return new UserDetailsDTO(
                 usuario.getId(),
                 usuario.getName(),
-                usuario.getLogin(),
+                usuario.getEmail(),
                 usuario.getPerfil(),
                 usuario.getUsuarioEnum()
         );
     }
 
     // Devolvendo a lista para o Usuarios Ativos
-    public UserListDTO toList(Usuario list){
-        return new UserListDTO(
+    public UserListAtivosDTO toList(Usuario list){
+        return new UserListAtivosDTO(
                 list.getId(),
                 list.getName(),
-                list.getLogin(),
+                list.getEmail(),
                 list.getPerfil(),
                 list.getUsuarioEnum()
         );
@@ -49,7 +49,7 @@ public class UsuarioMapperDTO {
         return new UserListInativosDTO(
                 list.getId(),
                 list.getName(),
-                list.getLogin(),
+                list.getEmail(),
                 list.getUsuarioEnum(),
                 list.getPerfil()
         );
@@ -59,8 +59,8 @@ public class UsuarioMapperDTO {
       return new Usuario(
               null,
               null,
+              dto.email(),
               dto.password(),
-              null,
               dto.perfil(),
               UsuarioEnum.ATIVO
       );

@@ -3,7 +3,7 @@ package br.com.project_sena.adapter.in.controller;
 import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
-import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
 import br.com.project_sena.adapter.in.web.mapper.UsuarioMapperDTO;
 import br.com.project_sena.application.core.domain.model.Usuario;
@@ -21,9 +21,10 @@ import org.springframework.data.domain.Pageable;
 @RequestMapping("/usuario")
 public class UsuarioController implements UsuarioDomainModelController<
         UserRegisterDTO,
-        UserListDTO,
+        UserListAtivosDTO,
         UserListInativosDTO,
         UserUpdateDTO,
+        Void,
         Void,
         UserDetailsDTO,
         Long> {
@@ -46,7 +47,7 @@ public class UsuarioController implements UsuarioDomainModelController<
     }
 
     @GetMapping
-    public ResponseEntity<Page<UserListDTO>> listar(@PageableDefault(size = 10, sort = "perfil", page = 0, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<UserListAtivosDTO>> listarAtivos(@PageableDefault(size = 10, sort = "perfil", page = 0, direction = Sort.Direction.DESC) Pageable pageable) {
         Page <Usuario> usuario = usuarioService.listar(pageable);
         return ResponseEntity.ok(usuario.map(mapper::toList));
     }

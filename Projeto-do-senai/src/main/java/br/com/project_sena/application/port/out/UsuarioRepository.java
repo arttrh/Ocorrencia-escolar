@@ -19,5 +19,5 @@ public interface UsuarioRepository {
 
     void reativar(Long id);
 
-    Usuario fidByLogin(String login);
+    Usuario findByEmail(String email);
 }

@@ -4,16 +4,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
-public interface UsuarioDomainModelController <C, R, RI,  U, D,DET, ID>{
+public interface UsuarioDomainModelController <C, R, RI, U, D, DR, DET, ID>{
     ResponseEntity<DET> cadastrar(C dados);
 
-    ResponseEntity<Page<R>> listar(Pageable pageable);
+    ResponseEntity<Page<R>> listarAtivos(Pageable pageable);
 
     ResponseEntity<Page<RI>> listarInativos(Pageable pageable);
-
-    ResponseEntity<DET> detalhar(ID id);
 
     ResponseEntity<DET> atualizar(U dados, ID id);
 
     ResponseEntity<D> excluir(ID id);
+
+    ResponseEntity<DR> reativar(ID id);
+
+    ResponseEntity<DET> detalhar(ID id);
 }

@@ -57,8 +57,8 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     }
 
     @Override
-    public Usuario fidByLogin(String login) {
-        return jpaRepository.findByLogin(login)
+    public Usuario findByEmail(String email) {
+        return jpaRepository.findByEmail(email)
                 .map(mapperEntity::toDomain)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
