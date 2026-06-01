@@ -35,8 +35,8 @@ public class SecurityFilter extends OncePerRequestFilter {
         var authHeader = request.getHeader("Authorization");
             if (authHeader != null){
                 var tokenLimpo = authHeader.replace("Bearer ", "");
-                var login = token.validarToken(tokenLimpo);
-                UsuarioEntity usuario = repository.findByLogin(login).orElseThrow();
+                var email = token.validarToken(tokenLimpo);
+                UsuarioEntity usuario = repository.findByEmail(email).orElseThrow();
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
                                 usuario,
@@ -45,5 +45,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                         );
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
+        filterChain.doFilter(request, response);
     }
 }
