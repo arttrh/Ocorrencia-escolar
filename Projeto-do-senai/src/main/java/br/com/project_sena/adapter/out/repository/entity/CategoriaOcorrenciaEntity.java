@@ -16,7 +16,7 @@ public class CategoriaOcorrenciaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_category_occurrence")
     private Long id;
     private String nameCategory;
-
 }
