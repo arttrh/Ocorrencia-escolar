@@ -20,6 +20,7 @@ public class TurmaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_class")
     private Long id;
     private String className;
     private String shift;
@@ -27,6 +28,7 @@ public class TurmaEntity {
 
     //Enum
     @Enumerated(EnumType.STRING)
+    @Column(name = "turma_enum")
     private TurmaEnum turmaEnum;
     @ManyToMany(mappedBy = "turmas")
     private List<AlunoEntity> usuarios;
@@ -38,6 +40,4 @@ public class TurmaEntity {
     public void atualizarTurma(ClassRegisterDTO dto) {
 
     }
-
-
 }
