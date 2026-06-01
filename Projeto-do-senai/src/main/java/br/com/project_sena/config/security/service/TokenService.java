@@ -22,7 +22,7 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String token = JWT.create()
                     .withIssuer("Sistema-Ocorrencia-Escolar")
-                    .withSubject(usuario.getLogin())
+                    .withSubject(usuario.getEmail())
                     .withClaim("id", usuario.getId())
                     .withClaim("Perfil", usuario.getPerfil().name())
                     .withExpiresAt(expiracaoToken())

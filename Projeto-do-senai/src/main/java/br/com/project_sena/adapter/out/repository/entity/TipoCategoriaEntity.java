@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "type_of_occurrence")
+@Table(name = "type_occurrence")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,11 +16,13 @@ public class TipoCategoriaEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_type_occurrence")
     private Long id;
+    @Column(name = "name_occurrence")
     private String nameOccurrence;
 
     @ManyToOne
-    @JoinColumn(name = "id_category")
+    @JoinColumn(name = "id_category_occurrence")
     private CategoriaOcorrenciaEntity categorias;
 
     public TipoCategoriaEntity(Long id, String nameOccurrence) {
