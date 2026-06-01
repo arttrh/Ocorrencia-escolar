@@ -20,13 +20,15 @@ public class AlunoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_student")
     private Long id;
     private String photo;
     private String name;
-    @Column(name = "date_of_birth")
+    @Column(name = "date_birth")
     private LocalDate dateBirth;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "aluno_enum")
     private AlunoEnum alunoEnum;
 
     @ManyToMany

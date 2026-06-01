@@ -14,6 +14,7 @@ public class Aluno {
     private AlunoEnum alunoEnum;
 
     public Aluno() {
+
     }
 
     public Aluno(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum) {
@@ -23,6 +24,8 @@ public class Aluno {
         this.dateBirth = dateBirth;
         this.alunoEnum = alunoEnum;
     }
+
+
 
     public Long getId() {
         return id;
@@ -46,21 +49,21 @@ public class Aluno {
 
     public void atualizarAluno(Aluno aluno){
         if(aluno.getPhoto() != null && !aluno.getPhoto().isBlank()){
-            this.photo) = aluno.getPhoto();
+            this.photo = aluno.getPhoto();
         }
         if(aluno.getName() != null && !aluno.getName().isBlank()){
             this.name = aluno.getName();
         }
-        if(aluno.getDateBirth() != null && !aluno.getDateBirth().isBlank()){
+        if(aluno.getDateBirth() != null){
             this.dateBirth = aluno.getDateBirth();
         }
     }
 
     public void excluir(){
-        this.AlunoEnum = AlunoEnum.INVATIVO;
+        this.alunoEnum = AlunoEnum.INVATIVO;
     }
 
     public void reativar(){
-        this.AlunoEnum = AlunoEnum.ATIVO;
+        this.alunoEnum = AlunoEnum.ATIVO;
     }
 }
