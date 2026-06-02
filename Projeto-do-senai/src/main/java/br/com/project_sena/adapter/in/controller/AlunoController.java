@@ -25,7 +25,7 @@ public class AlunoController implements UsuarioDomainModelController<
         StudentListInativosDTO,
         StudentUpdateDTO,
         Void,
-        Void,
+        StudentDetailsDTO,
         StudentDetailsDTO,
         Long> {
 
@@ -37,7 +37,7 @@ public class AlunoController implements UsuarioDomainModelController<
         this.mapper = mapper;
      }
 
-     @PostMapping
+     @PostMapping("/cadastrar")
     public ResponseEntity<StudentDetailsDTO> cadastrar(
             @RequestBody @Valid StudentRequestDTO dto) {
          Aluno domain = mapper.toDomain(dto);
@@ -56,7 +56,7 @@ public class AlunoController implements UsuarioDomainModelController<
 
      @GetMapping("/inativos")
     public ResponseEntity<Page<StudentListInativosDTO>> listarInativos(@PageableDefault (size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable){
-        Page<Aluno> aluno = alunoService.listarAtivos(pageable);
+        Page<Aluno> aluno = alunoService.listarInativos(pageable);
         return ResponseEntity.ok(aluno.map(mapper::toListInvativos));
      }
 
@@ -67,22 +67,23 @@ public class AlunoController implements UsuarioDomainModelController<
         return ResponseEntity.ok(response);
      }
 
-     @PutMapping("/atualizar")
+     @PutMapping("/atualizar/{id}")
     public ResponseEntity<StudentDetailsDTO> atualizar(@RequestBody @Valid StudentUpdateDTO dto, @PathVariable Long id){
         Aluno domain = mapper.toDomainUpdate(dto);
         StudentDetailsDTO response = mapper.toDTO(alunoService.atualizar(id, domain));
         return ResponseEntity.ok(response);
      }
 
-     @DeleteMapping
+     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         alunoService.excluir(id);
         return ResponseEntity.noContent().build();
      }
 
-     @PatchMapping
-    public ResponseEntity<Void> reativar(@PathVariable Long id){
-         alunoService.reativar(id);
-         return ResponseEntity.noContent().build();
+     @PatchMapping("/{id}")
+    public ResponseEntity<StudentDetailsDTO> reativar(@PathVariable Long id){
+         Aluno aluno = alunoService.reativar(id);
+         StudentDetailsDTO dto = mapper.toDTO(aluno);
+         return ResponseEntity.ok(dto);
      }
 }

@@ -3,6 +3,8 @@ package br.com.project_sena.application.core.usecase;
 import br.com.project_sena.application.core.domain.enums.AlunoEnum;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.port.out.AlunoRepository;
+import br.com.project_sena.exception.type.AlunoExistingException;
+import br.com.project_sena.exception.type.AlunoNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class AlunoService {
     }
 
     public Aluno buscar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException(""));//Completar
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno nao encontrado"));
         return aluno;
     }
 
@@ -35,7 +37,7 @@ public class AlunoService {
     }
 
     public Aluno atualizar(Long id, Aluno aluno){
-        Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+        Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
         aluno.atualizarAluno(
                 aluno.getPhoto(),
                 aluno.getName(),
@@ -45,14 +47,17 @@ public class AlunoService {
     }
 
     public void excluir(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao Encontrado"));
         aluno.excluir();
         alunoRepository.save(aluno);
     }
 
-    public void reativar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
+    public Aluno reativar(Long id){
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
+        if (aluno.getAlunoEnum() == AlunoEnum.ATIVO){
+            throw new AlunoExistingException("Aluno ja esta Ativo");
+        }
         aluno.reativar();
-        alunoRepository.save(aluno);
+        return alunoRepository.save(aluno);
     }
 }

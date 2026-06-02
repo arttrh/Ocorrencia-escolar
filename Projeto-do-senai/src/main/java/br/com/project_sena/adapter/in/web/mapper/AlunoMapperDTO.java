@@ -47,7 +47,7 @@ public class AlunoMapperDTO {
                 aluno.getPhoto(),
                 aluno.getName(),
                 aluno.getDateBirth(),
-                AlunoEnum.INVATIVO
+                aluno.getAlunoEnum()
         );
     }
 
