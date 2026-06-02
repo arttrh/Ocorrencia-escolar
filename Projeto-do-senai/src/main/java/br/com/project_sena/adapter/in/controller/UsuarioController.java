@@ -46,7 +46,7 @@ public class UsuarioController implements UsuarioDomainModelController<
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
+    @GetMapping("/ativos")
     public ResponseEntity<Page<UserListAtivosDTO>> listarAtivos(@PageableDefault(size = 10, sort = "perfil", page = 0, direction = Sort.Direction.DESC) Pageable pageable) {
         Page <Usuario> usuario = usuarioService.listar(pageable);
         return ResponseEntity.ok(usuario.map(mapper::toList));
