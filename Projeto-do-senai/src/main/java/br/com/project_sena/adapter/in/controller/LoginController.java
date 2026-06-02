@@ -1,6 +1,6 @@
 package br.com.project_sena.adapter.in.controller;
 
-import br.com.project_sena.adapter.in.controller.request.LoginDTO;
+import br.com.project_sena.adapter.in.controller.request.EmailDTO;
 import br.com.project_sena.application.core.service.AutenticacaoService;
 import br.com.project_sena.config.security.service.TokenDTO;
 import br.com.project_sena.config.security.service.TokenService;
@@ -23,7 +23,7 @@ public class LoginController {
     }
 
     @PostMapping
-    public ResponseEntity<TokenDTO> logar(@RequestBody LoginDTO dto) throws LoginException {
+    public ResponseEntity<TokenDTO> logar(@RequestBody EmailDTO dto) throws LoginException {
         TokenDTO usuario = service.logar(dto);
         return ResponseEntity.ok(usuario);
     }
