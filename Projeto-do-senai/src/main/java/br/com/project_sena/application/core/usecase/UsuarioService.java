@@ -40,7 +40,11 @@ public class UsuarioService {
 
     public Usuario atualizar(Usuario dados, Long id) {
         Usuario usuarioBucar = usuarioRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
-        usuarioBucar.atualizarUsuario(dados);
+        usuarioBucar.atualizarUsuario(
+                dados.getPerfil(),
+                dados.getEmail(),
+                dados.getPassword()
+        );
         usuarioBucar.setPassword(passwordEncoder.encode(dados.getPassword()));
         return usuarioRepository.save(usuarioBucar);
     }

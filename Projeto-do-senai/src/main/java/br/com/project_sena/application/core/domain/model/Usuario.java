@@ -112,16 +112,18 @@ public class Usuario implements UserDetails {
         this.usuarioEnum = usuarioEnum;
     }
 
-    public void atualizarUsuario(Usuario usuario) {
-        if (usuario.getPerfil() != null){
-            this.perfil = usuario.getPerfil();
+    public void atualizarUsuario(PerfilEnum perfil,
+                                 String email,
+                                 String password) {
+        if (perfil != null){
+            this.perfil = perfil;
         }
-        if (usuario.getEmail() != null && !usuario.getEmail().isBlank()){
-            this.email = usuario.getEmail();
+        if (email != null && !email.isBlank()){
+            this.email = email;
         }
 
-        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()){
-            this.password = usuario.getPassword();
+        if (password != null && !password.isBlank()){
+            this.password = password;
         }
     }
 
