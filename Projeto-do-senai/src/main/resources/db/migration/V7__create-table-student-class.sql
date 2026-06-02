@@ -1,4 +1,3 @@
-
 CREATE TABLE student_class (
     id_student BIGINT NOT NULL,
     id_class BIGINT NOT NULL,
