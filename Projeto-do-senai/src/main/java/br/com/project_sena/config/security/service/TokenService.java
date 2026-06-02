@@ -1,6 +1,7 @@
 package br.com.project_sena.config.security.service;
 
 import br.com.project_sena.application.core.domain.model.Usuario;
+import br.com.project_sena.exception.type.TokenInvalidoException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
@@ -29,11 +30,11 @@ public class TokenService {
                     .sign(algorithm);
             return new TokenDTO(token);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+            throw new TokenInvalidoException("Token invalido");
         }
     }
 
-    public String validarToken(String token){
+    public String validarToken(String token) throws TokenInvalidoException{
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             String tokenValidar = JWT.require(algorithm)
@@ -43,7 +44,7 @@ public class TokenService {
                     .getSubject();
             return tokenValidar;
         } catch (JWTVerificationException e){
-            return null;
+            return "Token invalido";
         }
     }
 
