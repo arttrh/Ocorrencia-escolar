@@ -36,7 +36,11 @@ public class AlunoService {
 
     public Aluno atualizar(Long id, Aluno aluno){
         Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException(""));
-        aluno.atualizarAluno(aluno);
+        aluno.atualizarAluno(
+                aluno.getPhoto(),
+                aluno.getName(),
+                aluno.getDateBirth()
+        );
         return alunoRepository.save(aluno);
     }
 

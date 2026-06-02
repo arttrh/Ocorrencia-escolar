@@ -38,7 +38,8 @@ public class AlunoController implements UsuarioDomainModelController<
      }
 
      @PostMapping
-    public ResponseEntity<StudentDetailsDTO> cadastrar(@RequestBody @Valid StudentRequestDTO dto) {
+    public ResponseEntity<StudentDetailsDTO> cadastrar(
+            @RequestBody @Valid StudentRequestDTO dto) {
          Aluno domain = mapper.toDomain(dto);
          Aluno alunoCadastrado = alunoService.cadastrar(domain);
          StudentDetailsDTO response = mapper.toDTO(alunoCadastrado);
@@ -46,7 +47,9 @@ public class AlunoController implements UsuarioDomainModelController<
      }
 
      @GetMapping("/ativos")
-     public ResponseEntity<Page<StudentListAtivosDTO>> listarAtivos(@PageableDefault (size = 10, sort = "name", direction = Sort.Direction.DESC) Pageable pageable){
+     public ResponseEntity<Page<StudentListAtivosDTO>> listarAtivos(
+             @PageableDefault (size = 10, sort = "name", direction = Sort.Direction.DESC)
+             Pageable pageable){
         Page<Aluno> aluno = alunoService.listarAtivos(pageable);
         return ResponseEntity.ok(aluno.map(mapper::toListAtivoDTO));
      }

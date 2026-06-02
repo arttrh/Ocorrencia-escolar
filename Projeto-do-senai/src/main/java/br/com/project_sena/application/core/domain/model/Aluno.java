@@ -47,15 +47,15 @@ public class Aluno {
         return alunoEnum;
     }
 
-    public void atualizarAluno(Aluno aluno){
-        if(aluno.getPhoto() != null && !aluno.getPhoto().isBlank()){
-            this.photo = aluno.getPhoto();
+    public void atualizarAluno(String photo, String name, LocalDate dateBirth){
+        if(photo != null && !photo.isBlank()){
+            this.photo = photo;
         }
-        if(aluno.getName() != null && !aluno.getName().isBlank()){
-            this.name = aluno.getName();
+        if(name != null && !name.isBlank()){
+            this.name = name;
         }
-        if(aluno.getDateBirth() != null){
-            this.dateBirth = aluno.getDateBirth();
+        if(dateBirth != null){
+            this.dateBirth = dateBirth;
         }
     }
 
