@@ -1,9 +1,7 @@
 package br.com.project_sena.exception;
 
-import br.com.project_sena.exception.type.EmailException;
-import br.com.project_sena.exception.type.SenhaException;
-import br.com.project_sena.exception.type.TokenInvalidoException;
-import br.com.project_sena.exception.type.UsuarioNotFoundException;
+import br.com.project_sena.exception.type.*;
+import org.apache.coyote.Response;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,4 +33,13 @@ public class GlobalHandlerErrors {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    @ExceptionHandler(AlunoNotFoundException.class)
+    public ResponseEntity<String> handlerAlunoNotFound(AlunoNotFoundException ex){
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AlunoExistingException.class)
+    public ResponseEntity<String> handlerAlunoExisting(AlunoExistingException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }
