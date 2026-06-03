@@ -9,6 +9,7 @@ public record StudentListInativosDTO(
         String photo,
         String name,
         LocalDate dateBirth,
-        AlunoEnum alunoEnum
+        AlunoEnum alunoEnum,
+        String className
 ) {
 }
