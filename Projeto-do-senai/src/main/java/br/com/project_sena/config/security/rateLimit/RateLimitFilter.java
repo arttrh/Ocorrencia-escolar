@@ -19,7 +19,6 @@ public class RateLimitFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
-
         if (request.getRequestURI().equals("/login")){
             if (!bucket.tryConsume(1)){
                 response.setStatus(429);
