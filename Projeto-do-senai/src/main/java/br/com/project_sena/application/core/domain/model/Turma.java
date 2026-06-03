@@ -1,45 +1,64 @@
-package br.com.project_sena.application.core.domain.model;
+    package br.com.project_sena.application.core.domain.model;
 
-import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+    import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 
-public class Turma {
+    import java.util.List;
 
-    private Long id;
-    private String className;
-    private String shift;
-    private Integer classYear;
+    public class Turma {
 
-    //Enums
-    private TurmaEnum turmaEnum;
+        private Long id;
+        private String className;
+        private String shift;
+        private Integer classYear;
 
-    public Turma(Long id, String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
-        this.id = id;
-        this.className = className;
-        this.shift = shift;
-        this.classYear = classYear;
-        this.turmaEnum = turmaEnum;
+        //Enums
+        private TurmaEnum turmaEnum;
+
+        private List<Aluno> studentId;
+
+
+        public Turma() {
+        }
+
+        public Turma(Long id, String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
+            this.id = id;
+            this.className = className;
+            this.shift = shift;
+            this.classYear = classYear;
+            this.turmaEnum = turmaEnum;
+        }
+
+        public Turma(String className, String shift, Integer classYear) {
+            this.className = className;
+            this.shift = shift;
+            this.classYear = classYear;
+        }
+
+        public Turma(String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
+            this.className = className;
+            this.shift = shift;
+            this.classYear = classYear;
+            this.turmaEnum = turmaEnum;
+
+        }
+
+        public Long getId() {
+            return id;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public String getShift() {
+            return shift;
+        }
+
+        public Integer getClassYear() {
+            return classYear;
+        }
+
+        public TurmaEnum getTurmaEnum() {
+            return turmaEnum;
+        }
     }
-
-    public Turma() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public String getShift() {
-        return shift;
-    }
-
-    public Integer getClassYear() {
-        return classYear;
-    }
-
-    public TurmaEnum getTurmaEnum() {
-        return turmaEnum;
-    }
-}

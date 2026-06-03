@@ -30,11 +30,15 @@ public class TurmaEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "turma_enum")
     private TurmaEnum turmaEnum;
-    @ManyToMany(mappedBy = "turmas")
-    private List<AlunoEntity> usuarios;
+    @OneToMany(mappedBy = "turma")
+    private List<AlunoEntity> alunos;
 
     public TurmaEntity(Long id, String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
-
+        this.id = id;
+        this.className = className;
+        this.shift = shift;
+        this.classYear = classYear;
+        this.turmaEnum = turmaEnum;
     }
 
     public void atualizarTurma(ClassRegisterDTO dto) {
