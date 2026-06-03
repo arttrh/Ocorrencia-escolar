@@ -5,6 +5,7 @@ import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.port.out.AlunoRepository;
 import br.com.project_sena.exception.type.AlunoExistingException;
 import br.com.project_sena.exception.type.AlunoNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class AlunoService {
         this.alunoRepository = alunoRepository;
     }
 
+    @Transactional
     public Aluno cadastrar(Aluno dados){
        Aluno saved = alunoRepository.save(dados);
        return saved;
@@ -36,6 +38,7 @@ public class AlunoService {
         return alunoRepository.findByAlunoEnum(paginacao, AlunoEnum.INVATIVO);
     }
 
+    @Transactional
     public Aluno atualizar(Long id, Aluno aluno){
         Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
         aluno.atualizarAluno(

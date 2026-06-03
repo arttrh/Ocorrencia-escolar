@@ -31,11 +31,9 @@ public class AlunoEntity {
     @Column(name = "aluno_enum")
     private AlunoEnum alunoEnum;
 
-    @ManyToMany
-    @JoinTable(name = "student_class",
-            joinColumns = @JoinColumn(name = "id_student"),
-            inverseJoinColumns = @JoinColumn(name = "id_class"))
-    private List<TurmaEntity> turmas;
+    @ManyToOne
+    @JoinColumn(name = "id_class")
+    private TurmaEntity turma;
 
 
     public AlunoEntity(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum) {

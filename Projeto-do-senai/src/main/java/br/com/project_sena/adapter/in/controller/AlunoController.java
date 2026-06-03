@@ -9,6 +9,7 @@ import br.com.project_sena.adapter.in.web.mapper.AlunoMapperDTO;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.usecase.AlunoService;
 import br.com.project_sena.application.port.in.UsuarioDomainModelController;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -67,6 +68,7 @@ public class AlunoController implements UsuarioDomainModelController<
         return ResponseEntity.ok(response);
      }
 
+     @Transactional
      @PutMapping("/atualizar/{id}")
     public ResponseEntity<StudentDetailsDTO> atualizar(@RequestBody @Valid StudentUpdateDTO dto, @PathVariable Long id){
         Aluno domain = mapper.toDomainUpdate(dto);
@@ -74,12 +76,14 @@ public class AlunoController implements UsuarioDomainModelController<
         return ResponseEntity.ok(response);
      }
 
+     @Transactional
      @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         alunoService.excluir(id);
         return ResponseEntity.noContent().build();
      }
 
+     @Transactional
      @PatchMapping("/{id}")
     public ResponseEntity<StudentDetailsDTO> reativar(@PathVariable Long id){
          Aluno aluno = alunoService.reativar(id);

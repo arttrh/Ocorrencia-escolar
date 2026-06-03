@@ -13,16 +13,19 @@ public class Aluno {
     //Enum
     private AlunoEnum alunoEnum;
 
+    private Turma turma;
+
     public Aluno() {
 
     }
 
-    public Aluno(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum) {
+    public Aluno(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum, Turma turma) {
         this.id = id;
         this.photo = photo;
         this.name = name;
         this.dateBirth = dateBirth;
         this.alunoEnum = alunoEnum;
+        this.turma = turma;
     }
 
 
@@ -45,6 +48,10 @@ public class Aluno {
 
     public AlunoEnum getAlunoEnum() {
         return alunoEnum;
+    }
+
+    public Turma getTurma() {
+        return turma;
     }
 
     public void atualizarAluno(String photo, String name, LocalDate dateBirth){
