@@ -7,12 +7,10 @@ import br.com.project_sena.config.security.service.TokenDTO;
 import br.com.project_sena.config.security.service.TokenService;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.LoginException;
 
@@ -30,8 +28,9 @@ public class LoginController {
     }
 
     @PostMapping
+    @CrossOrigin(origins = "http://127.0.0.1:5500")
     public ResponseEntity<TokenDTO> logar(
-            @RequestBody EmailDTO dto,
+            @RequestBody @Valid EmailDTO dto,
             HttpServletRequest request)
             throws LoginException {
         String ip = request.getRemoteAddr(); //Endereco de ip para quem esta acessando
