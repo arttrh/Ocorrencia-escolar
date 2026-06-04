@@ -14,9 +14,6 @@
         //Enums
         private TurmaEnum turmaEnum;
 
-        private List<Aluno> studentId;
-
-
         public Turma() {
         }
 

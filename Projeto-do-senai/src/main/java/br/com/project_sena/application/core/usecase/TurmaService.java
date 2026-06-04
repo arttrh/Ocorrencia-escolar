@@ -12,16 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 public class TurmaService {
 
     private final TurmaRepository repository;
-    private final AlunoRepository alunoRepository;
 
-    public TurmaService(TurmaRepository repository, AlunoRepository alunoRepository){
+    public TurmaService(TurmaRepository repository) {
         this.repository = repository;
-        this.alunoRepository = alunoRepository;
     }
 
     @Transactional
-    public Turma cadastrar(Turma dados, Long idAluno){
-        alunoRepository.findById(idAluno).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
+    public Turma cadastrar(Turma dados) {
         Turma saved = repository.save(dados);
         return saved;
     }
