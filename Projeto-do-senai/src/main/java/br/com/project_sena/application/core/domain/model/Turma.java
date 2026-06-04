@@ -36,7 +36,6 @@
             this.shift = shift;
             this.classYear = classYear;
             this.turmaEnum = turmaEnum;
-
         }
 
         public Long getId() {
@@ -57,5 +56,31 @@
 
         public TurmaEnum getTurmaEnum() {
             return turmaEnum;
+        }
+
+        public void atualizarTurma(String className,
+                                   String shift,
+                                   Integer classYear,
+                                   TurmaEnum turmaEnum){
+            if (className != null && !className.isBlank()){
+                this.className = className;
+            }
+            if (shift != null && !shift.isBlank()){
+                this.shift = shift;
+            }
+            if (classYear != null){
+                this.classYear = classYear;
+            }
+            if (turmaEnum != null){
+                this.turmaEnum = turmaEnum;
+            }
+        }
+
+        public void excluir(){
+            this.turmaEnum = TurmaEnum.CANCELADA;
+        }
+
+        public void reativar(){
+            this.turmaEnum = TurmaEnum.ATIVA;
         }
     }
