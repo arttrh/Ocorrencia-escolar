@@ -15,7 +15,6 @@ public record StudentRequestDTO(
         String name,
         @NotNull
         @JsonFormat(pattern = "dd/MM/yyyy")
-        LocalDate dateBirth,
-        Turma classId
+        LocalDate dateBirth
 ) {
 }
