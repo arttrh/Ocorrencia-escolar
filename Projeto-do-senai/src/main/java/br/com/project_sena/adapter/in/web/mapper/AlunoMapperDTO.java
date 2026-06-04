@@ -17,8 +17,7 @@ public class AlunoMapperDTO {
                 dto.photo(),
                 dto.name(),
                 dto.dateBirth(),
-                AlunoEnum.ATIVO,
-                dto.classId()
+                AlunoEnum.ATIVO
         );
     }
 
@@ -38,8 +37,7 @@ public class AlunoMapperDTO {
                 aluno.getPhoto(),
                 aluno.getName(),
                 aluno.getDateBirth(),
-                AlunoEnum.ATIVO,
-                aluno.getTurma().getClassName()
+                AlunoEnum.ATIVO
         );
     }
 
@@ -49,8 +47,7 @@ public class AlunoMapperDTO {
                 aluno.getPhoto(),
                 aluno.getName(),
                 aluno.getDateBirth(),
-                aluno.getAlunoEnum(),
-                aluno.getTurma().getClassName()
+                aluno.getAlunoEnum()
         );
     }
 
@@ -60,8 +57,7 @@ public class AlunoMapperDTO {
                 dto.photo(),
                 dto.name(),
                 dto.dateBirth(),
-                AlunoEnum.ATIVO,
-                dto.classId()
+                AlunoEnum.ATIVO
         );
     }
 }

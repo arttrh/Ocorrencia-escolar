@@ -77,14 +77,14 @@ public class AlunoController implements UsuarioDomainModelController<
      }
 
      @Transactional
-     @DeleteMapping("/{id}")
+     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> excluir(@PathVariable Long id){
         alunoService.excluir(id);
         return ResponseEntity.noContent().build();
      }
 
      @Transactional
-     @PatchMapping("/{id}")
+     @PatchMapping("/reativar/{id}")
     public ResponseEntity<StudentDetailsDTO> reativar(@PathVariable Long id){
          Aluno aluno = alunoService.reativar(id);
          StudentDetailsDTO dto = mapper.toDTO(aluno);
