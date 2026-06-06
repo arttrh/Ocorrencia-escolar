@@ -17,6 +17,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/aluno")
@@ -40,11 +43,17 @@ public class AlunoController implements UsuarioDomainModelController<
 
      @PostMapping("/cadastrar")
     public ResponseEntity<StudentDetailsDTO> cadastrar(
-            @RequestBody @Valid StudentRequestDTO dto) {
+             @RequestBody @Valid StudentRequestDTO dto,
+             UriComponentsBuilder uriBuilder) {
          Aluno domain = mapper.toDomain(dto);
          Aluno alunoCadastrado = alunoService.cadastrar(domain);
          StudentDetailsDTO response = mapper.toDTO(alunoCadastrado);
-         return ResponseEntity.ok(response);
+
+         URI uri = uriBuilder
+                 .path("/aluno/{id}")
+                 .buildAndExpand(alunoCadastrado.getId())
+                 .toUri();
+         return ResponseEntity.created(uri).build();
      }
 
      @GetMapping("/ativos")
@@ -68,7 +77,6 @@ public class AlunoController implements UsuarioDomainModelController<
         return ResponseEntity.ok(response);
      }
 
-     @Transactional
      @PutMapping("/atualizar/{id}")
     public ResponseEntity<StudentDetailsDTO> atualizar(@RequestBody @Valid StudentUpdateDTO dto, @PathVariable Long id){
         Aluno domain = mapper.toDomainUpdate(dto);
