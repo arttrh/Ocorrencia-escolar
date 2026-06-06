@@ -16,6 +16,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/usuario")
@@ -39,11 +42,16 @@ public class UsuarioController implements UsuarioDomainModelController<
 
     @PostMapping("/cadastrar")
     public ResponseEntity<UserDetailsDTO> cadastrar(
-            @RequestBody @Valid UserRegisterDTO dto) {
+            @RequestBody @Valid UserRegisterDTO dto,
+            UriComponentsBuilder uriBuilder) {
         Usuario domain = mapper.toDomain(dto);
         Usuario salvo = usuarioService.cadastrar(domain);
         UserDetailsDTO response = mapper.toDTO(salvo);
-        return ResponseEntity.ok(response);
+        URI uri = uriBuilder
+                .path("/usuario/{id}")
+                .buildAndExpand(salvo.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(response);
     }
 
     @GetMapping("/ativos")

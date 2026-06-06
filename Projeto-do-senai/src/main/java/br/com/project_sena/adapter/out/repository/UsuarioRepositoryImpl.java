@@ -62,4 +62,9 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
                 .map(mapperEntity::toDomain)
                 .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
     }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return jpaRepository.existsByEmail(email);
+    }
 }

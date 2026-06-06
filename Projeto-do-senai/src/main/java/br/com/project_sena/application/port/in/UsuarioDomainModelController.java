@@ -3,9 +3,10 @@ package br.com.project_sena.application.port.in;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public interface UsuarioDomainModelController <C, R, RI, U, D, DR, DET, ID>{
-    ResponseEntity<DET> cadastrar(C dados);
+    ResponseEntity<DET> cadastrar(C dados, UriComponentsBuilder uriBuilder);
 
     ResponseEntity<Page<R>> listarAtivos(Pageable pageable);
 

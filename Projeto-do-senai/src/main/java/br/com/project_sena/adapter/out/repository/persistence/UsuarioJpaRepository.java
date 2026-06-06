@@ -12,4 +12,5 @@ public interface UsuarioJpaRepository extends JpaRepository<UsuarioEntity, Long>
     Page<UsuarioEntity> findAllByUsuarioEnum(UsuarioEnum status, Pageable pageable);
 
     Optional<UsuarioEntity> findByEmail(String email);
+    Boolean existsByEmail(String email);
 }

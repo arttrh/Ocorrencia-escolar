@@ -3,6 +3,7 @@ import br.com.project_sena.adapter.out.repository.mapper.UsuarioMapperEntity;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
+import br.com.project_sena.exception.type.EmailDuplicadoException;
 import br.com.project_sena.exception.type.UsuarioNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,10 @@ public class UsuarioService {
 
     public Usuario cadastrar(Usuario dados) {
         dados.setPassword(passwordEncoder.encode(dados.getPassword()));
+        if (usuarioRepository.existsByEmail(dados.getEmail())){
+            System.out.println("EMAIL JA EXISTE");
+            throw new EmailDuplicadoException("Email ja existe no sistema");
+        }
         return usuarioRepository.save(dados);
     }
 

@@ -20,4 +20,6 @@ public interface UsuarioRepository {
     void reativar(Long id);
 
     Usuario findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }
