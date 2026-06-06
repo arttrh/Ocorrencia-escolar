@@ -1,6 +1,7 @@
 package br.com.project_sena.application.core.usecase;
 
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Turma;
 import br.com.project_sena.application.port.out.TurmaRepository;
 import br.com.project_sena.exception.type.TurmaNotFoundException;
@@ -30,12 +31,12 @@ public class TurmaService {
         return turma;
     }
 
-    public Page <Turma> listarTurmasCanceladas(Pageable pageable){
-        return repository.findByTurmaEnum(pageable, TurmaEnum.CANCELADA);
-    }
-
     public Page<Turma> listarTurmasAtivas(Pageable pageable){
         return repository.findByTurmaEnum(pageable, TurmaEnum.ATIVA);
+    }
+
+    public Page <Turma> listarTurmasCanceladas(Pageable pageable){
+        return repository.findByTurmaEnum(pageable, TurmaEnum.CANCELADA);
     }
 
     public Turma atualizarTurma(Turma dados, Long id){
@@ -55,9 +56,10 @@ public class TurmaService {
         repository.save(turma);
     }
 
-    public void reativar(Long id){
+    public Turma reativar(Long id){
         Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
         turma.reativar();
-        repository.save(turma);
+       Turma saved = repository.save(turma);
+        return saved;
     }
 }

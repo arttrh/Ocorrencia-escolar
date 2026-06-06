@@ -31,7 +31,6 @@ public class TurmaEntity {
     @Column(name = "turma_enum")
     private TurmaEnum turmaEnum;
 
-    public void atualizarTurma(ClassRegisterDTO dto) {
-
+    public void atualizarTurma() {
     }
 }

@@ -21,13 +21,13 @@ public class TurmaMapperDTO {
         );
     }
 
-    public Turma toDetails(ClassDetailsDTO dto){
-        return new Turma(
-                dto.idClass(),
-                dto.className(),
-                dto.shift(),
-                dto.classYear(),
-                dto.turmaEnum()
+    public ClassDetailsDTO toDetailsDTO(Turma dto){
+        return new ClassDetailsDTO(
+              dto.getId(),
+              dto.getClassName(),
+              dto.getShift(),
+              dto.getClassYear(),
+              dto.getTurmaEnum()
         );
     }
 
@@ -35,29 +35,27 @@ public class TurmaMapperDTO {
         return new Turma(
                 dto.className(),
                 dto.shift(),
-                dto.classYear(),
-                dto.turmaEnum()
+                dto.classYear()
         );
     }
 
-    public Turma toListAtivosDTO(ClassListAtivoDTO dto){
-        return new Turma(
-                dto.id(),
-                dto.className(),
-                dto.shift(),
-                dto.classYear(),
-                TurmaEnum.ATIVA
+    public ClassListAtivoDTO toListAtivosDTO(Turma dto){
+        return new ClassListAtivoDTO(
+                dto.getId(),
+                dto.getClassName(),
+                dto.getShift(),
+                dto.getClassYear(),
+                dto.getTurmaEnum()
         );
     }
 
-    public Turma toListInativos(ClassListInativosDTO dto){
-        return new Turma(
-                dto.id(),
-                dto.className(),
-                dto.shift(),
-                dto.classYear(),
-                TurmaEnum.CANCELADA
+    public ClassListInativosDTO toListInativos(Turma dto){
+        return new ClassListInativosDTO(
+                dto.getId(),
+                dto.getClassName(),
+                dto.getShift(),
+                dto.getClassYear(),
+                dto.getTurmaEnum()
         );
     }
-
 }

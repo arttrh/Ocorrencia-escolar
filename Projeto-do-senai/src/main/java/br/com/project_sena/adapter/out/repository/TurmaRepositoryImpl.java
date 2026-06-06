@@ -1,6 +1,5 @@
 package br.com.project_sena.adapter.out.repository;
 
-import br.com.project_sena.adapter.out.repository.entity.TurmaEntity;
 import br.com.project_sena.adapter.out.repository.mapper.TurmaMapperEntity;
 import br.com.project_sena.adapter.out.repository.persistence.TurmaJpaRepository;
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
