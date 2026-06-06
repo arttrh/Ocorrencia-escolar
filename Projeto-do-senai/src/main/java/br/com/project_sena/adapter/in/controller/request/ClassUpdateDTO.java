@@ -5,7 +5,6 @@ import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 public record ClassUpdateDTO(
         String className,
         String shift,
-        Integer classYear,
-        TurmaEnum turmaEnum
+        Integer classYear
 ) {
 }

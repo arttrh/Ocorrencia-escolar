@@ -8,8 +8,6 @@ public record ClassListInativosDTO (
         String className,
         String shift,
         Integer classYear,
-        TurmaEnum turmaEnum,
-        Long idStudent,
-        AlunoEnum alunoEnum
+        TurmaEnum turmaEnum
 ){
 }
