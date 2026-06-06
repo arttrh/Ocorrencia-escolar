@@ -2,6 +2,7 @@ package br.com.project_sena.config.security;
 
 import br.com.project_sena.config.security.filter.SecurityFilter;
 import br.com.project_sena.config.security.rateLimit.RateLimitFilter;
+import br.com.project_sena.exception.MeuAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,10 +24,12 @@ import java.util.List;
 public class SecurityConfig {
     private final SecurityFilter securityFilter;
     private final RateLimitFilter limitFilter;
+    private final MeuAccessDeniedHandler handler;
 
-    public SecurityConfig(SecurityFilter securityFilter, RateLimitFilter limitFilter){
+    public SecurityConfig(SecurityFilter securityFilter, RateLimitFilter limitFilter, MeuAccessDeniedHandler handler){
         this.securityFilter = securityFilter;
         this.limitFilter = limitFilter;
+        this.handler = handler;
     }
 
     @Value("${app.cors.allowed-origins}")
@@ -38,9 +41,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http,
+            MeuAccessDeniedHandler handler
+                                                   ){
         return http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfiguration()))
+                .exceptionHandling(exception -> exception.accessDeniedHandler(handler))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(limitFilter, UsernamePasswordAuthenticationFilter.class)
@@ -67,6 +74,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/aluno/reativar/{id}").hasRole("ADMINISTRATIVO")
 
                         //Turma
+                        .requestMatchers(HttpMethod.POST, "/turmas/cadastrar").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.GET, "/turmas/listar/inativo").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.GET, "/turmas/listar/ativo").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.GET, "/turmas/detalhar/{id}").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.PUT, "/turmas/atualizar/{id}").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.DELETE, "/turmas/excluir/{id}").hasRole("ADMINISTRATIVO")
+                        .requestMatchers(HttpMethod.PATCH, "/turmas/reativar/{id}").hasRole("ADMINISTRATIVO")
                         .anyRequest().authenticated()
                 ).build();
     }
