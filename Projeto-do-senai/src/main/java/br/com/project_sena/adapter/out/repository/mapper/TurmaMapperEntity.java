@@ -10,9 +10,10 @@ public class TurmaMapperEntity {
         return new Turma(
                 entity.getId(),
                 entity.getClassName(),
-                entity.getShift(),
+                entity.getTurnoTurma(),
                 entity.getClassYear(),
-                entity.getTurmaEnum()
+                entity.getTurmaEnum(),
+                entity.getSemestry()
         );
     }
 
@@ -20,9 +21,10 @@ public class TurmaMapperEntity {
         return new TurmaEntity(
                 turma.getId(),
                 turma.getClassName(),
-                turma.getShift(),
+                turma.getTurmaTurnoEnum(),
                 turma.getClassYear(),
-                turma.getTurmaEnum()
+                turma.getTurmaEnum(),
+                turma.getSemestry()
         );
     }
 }

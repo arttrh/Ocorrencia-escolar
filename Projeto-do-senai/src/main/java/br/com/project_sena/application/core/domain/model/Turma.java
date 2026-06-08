@@ -1,41 +1,49 @@
     package br.com.project_sena.application.core.domain.model;
 
     import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+    import br.com.project_sena.application.core.domain.enums.TurmaTurnoEnum;
 
+    import java.time.LocalDateTime;
     import java.util.List;
 
     public class Turma {
 
         private Long id;
         private String className;
-        private String shift;
-        private Integer classYear;
+        private LocalDateTime classYear;
+        private LocalDateTime semestry;
+        private Integer turmaCheia = 36;
 
         //Enums
         private TurmaEnum turmaEnum;
+        private TurmaTurnoEnum turmaTurnoEnum;
+
+        private List<Aluno> aluno;
 
         public Turma() {
         }
 
-        public Turma(Long id, String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
+        public Turma(Long id, String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
             this.id = id;
             this.className = className;
-            this.shift = shift;
             this.classYear = classYear;
             this.turmaEnum = turmaEnum;
+            this.semestry = semestry;
         }
 
-        public Turma(String className, String shift, Integer classYear) {
+        public Turma(String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, LocalDateTime semestry) {
             this.className = className;
-            this.shift = shift;
             this.classYear = classYear;
+            this.turmaTurnoEnum = turnoTurma;
+            this.semestry = semestry;
         }
 
-        public Turma(String className, String shift, Integer classYear, TurmaEnum turmaEnum) {
+        public Turma(String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
             this.className = className;
-            this.shift = shift;
             this.classYear = classYear;
             this.turmaEnum = turmaEnum;
+            this.turmaTurnoEnum = turnoTurma;
+            this.semestry = semestry;
         }
 
         public Long getId() {
@@ -46,11 +54,7 @@
             return className;
         }
 
-        public String getShift() {
-            return shift;
-        }
-
-        public Integer getClassYear() {
+        public LocalDateTime getClassYear() {
             return classYear;
         }
 
@@ -58,16 +62,36 @@
             return turmaEnum;
         }
 
+        public TurmaTurnoEnum getTurmaTurnoEnum() {
+            return turmaTurnoEnum;
+        }
+
+        public LocalDateTime getSemestry() {
+            return semestry;
+        }
+
+        public List<Aluno> getAluno() {
+            return aluno;
+        }
+
+        public void setAluno(List<Aluno> aluno) {
+            this.aluno = aluno;
+        }
+
+        public Integer getTurmaCheia() {
+            return turmaCheia;
+        }
+
         public void atualizarTurma(String className,
-                                   String shift,
-                                   Integer classYear,
+                                   TurmaTurnoEnum turmaTurnoEnum,
+                                   LocalDateTime classYear,
                                    TurmaEnum turmaEnum){
             if (className != null && !className.isBlank()){
                 this.className = className;
             }
-            if (shift != null && !shift.isBlank()){
-                this.shift = shift;
-            }
+           if (turmaTurnoEnum != null){
+               this.turmaTurnoEnum = turmaTurnoEnum;
+           }
             if (classYear != null){
                 this.classYear = classYear;
             }

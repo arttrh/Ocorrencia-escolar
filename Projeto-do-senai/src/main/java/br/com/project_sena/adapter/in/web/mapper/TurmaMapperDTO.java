@@ -1,12 +1,10 @@
 package br.com.project_sena.adapter.in.web.mapper;
 
-import br.com.project_sena.adapter.in.controller.request.ClassRegisterDTO;
-import br.com.project_sena.adapter.in.controller.request.ClassUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.turma.ClassRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.turma.ClassUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassListAtivoDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassListInativosDTO;
-import br.com.project_sena.application.core.domain.enums.AlunoEnum;
-import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 import br.com.project_sena.application.core.domain.model.Turma;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +14,9 @@ public class TurmaMapperDTO {
     public Turma toDomain(ClassRegisterDTO dto){
         return new Turma(
                 dto.className(),
-                dto.shift(),
-                dto.classYear()
+                dto.turmaTurno(),
+                dto.classYear(),
+                dto.semestry()
         );
     }
 
@@ -25,17 +24,19 @@ public class TurmaMapperDTO {
         return new ClassDetailsDTO(
               dto.getId(),
               dto.getClassName(),
-              dto.getShift(),
+              dto.getTurmaTurnoEnum(),
               dto.getClassYear(),
-              dto.getTurmaEnum()
+              dto.getTurmaEnum(),
+              dto.getSemestry()
         );
     }
 
     public Turma toUpdateDTO(ClassUpdateDTO dto){
         return new Turma(
                 dto.className(),
-                dto.shift(),
-                dto.classYear()
+                dto.turnoTurma(),
+                dto.classYear(),
+                dto.semestry()
         );
     }
 
@@ -43,9 +44,10 @@ public class TurmaMapperDTO {
         return new ClassListAtivoDTO(
                 dto.getId(),
                 dto.getClassName(),
-                dto.getShift(),
+                dto.getTurmaTurnoEnum(),
                 dto.getClassYear(),
-                dto.getTurmaEnum()
+                dto.getTurmaEnum(),
+                dto.getSemestry()
         );
     }
 
@@ -53,9 +55,10 @@ public class TurmaMapperDTO {
         return new ClassListInativosDTO(
                 dto.getId(),
                 dto.getClassName(),
-                dto.getShift(),
+                dto.getTurmaTurnoEnum(),
                 dto.getClassYear(),
-                dto.getTurmaEnum()
+                dto.getTurmaEnum(),
+                dto.getSemestry()
         );
     }
 }

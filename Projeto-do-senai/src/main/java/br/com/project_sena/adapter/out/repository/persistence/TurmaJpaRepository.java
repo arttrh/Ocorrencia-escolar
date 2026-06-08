@@ -11,4 +11,6 @@ import java.util.Optional;
 
 public interface TurmaJpaRepository extends JpaRepository<TurmaEntity, Long> {
     Page<TurmaEntity> findByTurmaEnum(Pageable paginacao, TurmaEnum status);
+
+    Turma findAll(Turma turma);
 }

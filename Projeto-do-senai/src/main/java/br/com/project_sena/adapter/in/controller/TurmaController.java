@@ -1,14 +1,15 @@
 package br.com.project_sena.adapter.in.controller;
 
-import br.com.project_sena.adapter.in.controller.request.ClassRegisterDTO;
-import br.com.project_sena.adapter.in.controller.request.ClassUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.turma.ClassRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.turma.ClassUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassListAtivoDTO;
 import br.com.project_sena.adapter.in.controller.response.ClassListInativosDTO;
+import br.com.project_sena.adapter.in.controller.response.VincularDetailsDTO;
 import br.com.project_sena.adapter.in.web.mapper.TurmaMapperDTO;
 import br.com.project_sena.application.core.domain.model.Turma;
 import br.com.project_sena.application.core.usecase.TurmaService;
-import br.com.project_sena.application.port.in.UsuarioDomainModelController;
+import br.com.project_sena.application.port.in.UsuarioDomainController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/turmas")
-public class TurmaController implements UsuarioDomainModelController<
+public class TurmaController implements UsuarioDomainController<
         ClassRegisterDTO,
         ClassListAtivoDTO,
         ClassListInativosDTO,
@@ -52,7 +53,12 @@ public class TurmaController implements UsuarioDomainModelController<
                 .path("/turma/{id}")
                 .buildAndExpand(turmaCadastrada.getId())
                 .toUri();
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).body(response);
+    }
+
+    @PostMapping("/vincular/{id}/{id}")
+    public ResponseEntity<VincularDetailsDTO> cadastrarVinculo(){
+
     }
 
     @GetMapping("/listar/inativo")
