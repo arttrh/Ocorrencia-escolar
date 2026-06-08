@@ -1,13 +1,13 @@
 package br.com.project_sena.application.core.service;
 
-import br.com.project_sena.adapter.in.controller.request.EmailDTO;
+import br.com.project_sena.adapter.in.controller.request.email.EmailDTO;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
 import br.com.project_sena.config.security.service.TokenDTO;
 import br.com.project_sena.config.security.service.TokenService;
-import br.com.project_sena.exception.type.EmailDuplicadoException;
-import br.com.project_sena.exception.type.SenhaException;
-import br.com.project_sena.exception.type.UsuarioNotFoundException;
+import br.com.project_sena.exception.type.EmailESenha.EmailDuplicadoException;
+import br.com.project_sena.exception.type.EmailESenha.SenhaException;
+import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
