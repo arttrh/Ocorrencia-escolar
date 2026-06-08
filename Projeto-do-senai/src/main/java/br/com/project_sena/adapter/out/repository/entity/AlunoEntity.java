@@ -34,4 +34,12 @@ public class AlunoEntity {
     @ManyToOne
     @JoinColumn(name = "id_class")
     private TurmaEntity turma;
+
+    public AlunoEntity(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum){
+        this.id = id;
+        this.photo = photo;
+        this.name = name;
+        this.dateBirth = dateBirth;
+        this.alunoEnum = alunoEnum;
+    }
 }
