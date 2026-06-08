@@ -11,6 +11,7 @@ import br.com.project_sena.exception.type.Aluno.AlunoNotFoundException;
 import br.com.project_sena.exception.type.Turma.TurmaCanceladaException;
 import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -23,10 +24,12 @@ public class ValidarVinculo {
 
     private final AlunoRepository alunoRepository;
     private final TurmaRepository turmaRepository;
+    private final ValidarTurmaCheia validarTurma;
 
-    public ValidarVinculo(AlunoRepository alunoRepository, TurmaRepository turmaRepository){
+    public ValidarVinculo(AlunoRepository alunoRepository, TurmaRepository turmaRepository, ValidarTurmaCheia validarTurma){
         this.alunoRepository = alunoRepository;
         this.turmaRepository = turmaRepository;
+        this.validarTurma = validarTurma;
     }
 
     public void vincularAlunoATurma(Aluno aluno, Turma turma){
@@ -42,7 +45,7 @@ public class ValidarVinculo {
             log.warn("ALUNO Ja cadastrado: {}", turma.getAluno());
             throw new RuntimeException("Aluno ja cadastrado em uma turma");
         }
-        List<Turma> todasAsTurmas = turmaRepository.findAll(turma);
+        List<Turma> todasAsTurmas = turmaRepository.findAll();
         for (Turma turmarDiferentes : todasAsTurmas){
             if (turmarDiferentes.getAluno().contains(aluno)){
                 throw new RuntimeException("Aluno nao pode ser adicionado em turmaDiferente");
@@ -52,8 +55,10 @@ public class ValidarVinculo {
             throw new AlunoInativoException("Aluno esta inativo nao pode ser vinculado a turma");
         }
         if (aluno.getAlunoEnum().equals(AlunoEnum.ATIVO)){
-            if (turma.getTurmaEnum().equals(TurmaEnum.ATIVA))
-            alunoRepository.save(aluno);
+            if (turma.getTurmaEnum().equals(TurmaEnum.ATIVA)) {
+                validarTurma.turmaCheia(turma);
+                alunoRepository.save(aluno);
+            }
         }
     }
 }
