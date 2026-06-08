@@ -42,7 +42,7 @@ public class ValidarVinculo {
             log.warn("ALUNO Ja cadastrado: {}", turma.getAluno());
             throw new RuntimeException("Aluno ja cadastrado em uma turma");
         }
-        Page<Turma> todasAsTurmas = turmaRepository.findAll((Pageable) turma);
+        List<Turma> todasAsTurmas = turmaRepository.findAll(turma);
         for (Turma turmarDiferentes : todasAsTurmas){
             if (turmarDiferentes.getAluno().contains(aluno)){
                 throw new RuntimeException("Aluno nao pode ser adicionado em turmaDiferente");

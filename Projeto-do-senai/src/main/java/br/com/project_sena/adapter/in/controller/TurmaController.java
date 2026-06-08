@@ -58,7 +58,7 @@ public class TurmaController implements UsuarioDomainController<
 
     @PostMapping("/vincular/{id}/{id}")
     public ResponseEntity<VincularDetailsDTO> cadastrarVinculo(){
-
+        return null;
     }
 
     @GetMapping("/listar/inativo")

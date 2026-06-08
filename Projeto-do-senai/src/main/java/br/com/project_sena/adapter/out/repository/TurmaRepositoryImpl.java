@@ -1,6 +1,5 @@
 package br.com.project_sena.adapter.out.repository;
 
-import br.com.project_sena.adapter.out.repository.entity.TurmaEntity;
 import br.com.project_sena.adapter.out.repository.mapper.TurmaMapperEntity;
 import br.com.project_sena.adapter.out.repository.persistence.TurmaJpaRepository;
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
@@ -10,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +41,7 @@ public class TurmaRepositoryImpl implements TurmaRepository {
     }
 
     @Override
-    public Page<Turma> findAll(Pageable Pageable) {
-        return turmaJpaRepository.findAll(Pageable);
+    public List<Turma> findAll(Turma turma) {
+        return Collections.singletonList(turmaJpaRepository.findAll(turma));
     }
 }

@@ -15,5 +15,5 @@ public interface TurmaRepository {
 
     Optional <Turma> findById(Long id);
 
-    Page<Turma> findAll(Pageable Pageable);
+    List<Turma> findAll(Turma turma);
 }
