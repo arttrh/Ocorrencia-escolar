@@ -1,7 +1,7 @@
 package br.com.project_sena.adapter.in.web.mapper;
 
-import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
-import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;

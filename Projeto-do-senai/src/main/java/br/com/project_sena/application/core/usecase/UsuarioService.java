@@ -1,10 +1,9 @@
 package br.com.project_sena.application.core.usecase;
-import br.com.project_sena.adapter.out.repository.mapper.UsuarioMapperEntity;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
-import br.com.project_sena.exception.type.EmailDuplicadoException;
-import br.com.project_sena.exception.type.UsuarioNotFoundException;
+import br.com.project_sena.exception.type.EmailESenha.EmailDuplicadoException;
+import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;

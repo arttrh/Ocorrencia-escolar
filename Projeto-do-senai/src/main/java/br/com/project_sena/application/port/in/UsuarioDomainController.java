@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponentsBuilder;
 
-public interface UsuarioDomainModelController <C, R, RI, U, D, DR, DET, ID>{
+public interface UsuarioDomainController<C, R, RI, U, D, DR, DET, ID>{
     ResponseEntity<DET> cadastrar(C dados, UriComponentsBuilder uriBuilder);
 
     ResponseEntity<Page<R>> listarAtivos(Pageable pageable);

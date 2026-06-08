@@ -1,14 +1,14 @@
 package br.com.project_sena.adapter.in.controller;
 
-import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
-import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
 import br.com.project_sena.adapter.in.web.mapper.UsuarioMapperDTO;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.core.usecase.UsuarioService;
-import br.com.project_sena.application.port.in.UsuarioDomainModelController;
+import br.com.project_sena.application.port.in.UsuarioDomainController;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -22,7 +22,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController implements UsuarioDomainModelController<
+public class UsuarioController implements UsuarioDomainController<
         UserRegisterDTO,
         UserListAtivosDTO,
         UserListInativosDTO,

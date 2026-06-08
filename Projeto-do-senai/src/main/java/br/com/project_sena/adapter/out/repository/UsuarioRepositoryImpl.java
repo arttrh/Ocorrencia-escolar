@@ -6,7 +6,7 @@ import br.com.project_sena.adapter.out.repository.persistence.UsuarioJpaReposito
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
-import br.com.project_sena.exception.type.UsuarioNotFoundException;
+import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
