@@ -1,7 +1,7 @@
 package br.com.project_sena.config.security.service;
 
 import br.com.project_sena.application.core.domain.model.Usuario;
-import br.com.project_sena.exception.type.TokenInvalidoException;
+import br.com.project_sena.exception.type.Token.TokenInvalidoException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
