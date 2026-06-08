@@ -1,4 +1,4 @@
-package br.com.project_sena.adapter.in.controller.request;
+package br.com.project_sena.adapter.in.controller.request.email;
 
 import jakarta.validation.constraints.NotBlank;
 

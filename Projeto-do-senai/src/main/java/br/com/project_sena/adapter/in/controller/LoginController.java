@@ -1,6 +1,6 @@
 package br.com.project_sena.adapter.in.controller;
 
-import br.com.project_sena.adapter.in.controller.request.EmailDTO;
+import br.com.project_sena.adapter.in.controller.request.email.EmailDTO;
 import br.com.project_sena.application.core.service.AutenticacaoService;
 import br.com.project_sena.config.security.rateLimit.RateLimitService;
 import br.com.project_sena.config.security.service.TokenDTO;

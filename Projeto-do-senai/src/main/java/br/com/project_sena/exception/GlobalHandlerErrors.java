@@ -1,7 +1,16 @@
 package br.com.project_sena.exception;
 
-import br.com.project_sena.exception.type.*;
+import br.com.project_sena.exception.type.Aluno.AlunoExistingException;
+import br.com.project_sena.exception.type.Aluno.AlunoInativoException;
+import br.com.project_sena.exception.type.Aluno.AlunoNotFoundException;
+import br.com.project_sena.exception.type.EmailESenha.EmailDuplicadoException;
+import br.com.project_sena.exception.type.EmailESenha.EmailException;
+import br.com.project_sena.exception.type.EmailESenha.SenhaException;
+import br.com.project_sena.exception.type.Token.TokenInvalidoException;
+import br.com.project_sena.exception.type.Turma.TurmaValidadeException;
+import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -60,6 +69,16 @@ public class GlobalHandlerErrors {
 
     @ExceptionHandler(EmailDuplicadoException.class)
     public ResponseEntity<String> handlerDuplicado(EmailDuplicadoException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AlunoInativoException.class)
+    public ResponseEntity<String> handlerAlunoInativo(AlunoInativoException ex){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(TurmaValidadeException.class)
+    public ResponseEntity<String> handlerTurmaValidadeException(TurmaValidadeException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 

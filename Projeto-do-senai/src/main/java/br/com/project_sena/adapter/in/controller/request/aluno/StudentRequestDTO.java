@@ -1,13 +1,12 @@
-package br.com.project_sena.adapter.in.controller.request;
+package br.com.project_sena.adapter.in.controller.request.aluno;
 
-import br.com.project_sena.application.core.domain.model.Turma;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
-public record StudentUpdateDTO(
+public record StudentRequestDTO(
         @NotBlank
         String photo,
         @NotBlank
