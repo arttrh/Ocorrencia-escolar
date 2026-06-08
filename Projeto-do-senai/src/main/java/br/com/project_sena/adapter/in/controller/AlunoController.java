@@ -1,14 +1,14 @@
 package br.com.project_sena.adapter.in.controller;
 
-import br.com.project_sena.adapter.in.controller.request.StudentRequestDTO;
-import br.com.project_sena.adapter.in.controller.request.StudentUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.aluno.StudentRequestDTO;
+import br.com.project_sena.adapter.in.controller.request.aluno.StudentUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentListInativosDTO;
 import br.com.project_sena.adapter.in.web.mapper.AlunoMapperDTO;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.usecase.AlunoService;
-import br.com.project_sena.application.port.in.UsuarioDomainModelController;
+import br.com.project_sena.application.port.in.UsuarioDomainController;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/aluno")
-public class AlunoController implements UsuarioDomainModelController<
+public class AlunoController implements UsuarioDomainController<
         StudentRequestDTO,
         StudentListAtivosDTO,
         StudentListInativosDTO,

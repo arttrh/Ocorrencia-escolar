@@ -30,4 +30,8 @@ public class AlunoEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "aluno_enum")
     private AlunoEnum alunoEnum;
+
+    @ManyToOne
+    @JoinColumn(name = "id_class")
+    private TurmaEntity turma;
 }

@@ -1,7 +1,7 @@
 package br.com.project_sena.adapter.in.web.mapper;
 
-import br.com.project_sena.adapter.in.controller.request.StudentRequestDTO;
-import br.com.project_sena.adapter.in.controller.request.StudentUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.aluno.StudentRequestDTO;
+import br.com.project_sena.adapter.in.controller.request.aluno.StudentUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentListAtivosDTO;
 import br.com.project_sena.adapter.in.controller.response.StudentListInativosDTO;
