@@ -35,8 +35,6 @@ public class TurmaEntity {
     @Column(name = "turma_turno")
     private TurmaTurnoEnum turnoTurma;
 
-
-
     public TurmaEntity(Long id, String className, TurmaTurnoEnum turmaTurnoEnum, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
         this.id = id;
         this.className = className;

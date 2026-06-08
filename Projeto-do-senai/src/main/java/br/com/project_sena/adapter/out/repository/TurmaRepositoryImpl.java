@@ -9,7 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,7 +40,10 @@ public class TurmaRepositoryImpl implements TurmaRepository {
     }
 
     @Override
-    public List<Turma> findAll(Turma turma) {
-        return Collections.singletonList(turmaJpaRepository.findAll(turma));
+    public List<Turma> findAll() {
+        return turmaJpaRepository.findAll()
+                .stream()
+                .map(mapperEntity::toDomain)
+                .toList();
     }
 }

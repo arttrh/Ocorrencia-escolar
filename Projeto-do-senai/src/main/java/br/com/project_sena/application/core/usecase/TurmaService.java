@@ -3,11 +3,9 @@ package br.com.project_sena.application.core.usecase;
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Turma;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarSemestre;
 import br.com.project_sena.application.core.usecase.validacoes.ValidarVinculo;
 import br.com.project_sena.application.port.out.TurmaRepository;
 import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
-import br.com.project_sena.exception.type.Turma.TurmaValidadeException;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,18 +16,15 @@ import org.springframework.stereotype.Service;
 public class TurmaService {
 
     private final TurmaRepository repository;
-    private final ValidarSemestre validarSemestre;
     private final ValidarVinculo validarTurma;
 
-    public TurmaService(TurmaRepository repository, ValidarSemestre validarSemestre, ValidarVinculo validarTurma) {
+    public TurmaService(TurmaRepository repository, ValidarVinculo validarTurma) {
         this.repository = repository;
-        this.validarSemestre = validarSemestre;
         this.validarTurma = validarTurma;
     }
 
     @Transactional
     public Turma vincularAlunoTurma(Turma dados, Aluno aluno){
-        validarSemestre.validarSemestre(dados);
         validarTurma.vincularAlunoATurma(aluno, dados);
         return repository.save(dados);
     }
