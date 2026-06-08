@@ -18,13 +18,12 @@ public class AlunoTurmaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToMany(mappedBy = "turmas")
-    private List<AlunoEntity> alunos;
-    @ManyToMany
-    @JoinTable(
-            name = "aluno_turma",
-            joinColumns = @JoinColumn(name = "aluno_id"),
-            inverseJoinColumns = @JoinColumn(name = "turma_id")
-    )
-    private List<TurmaEntity> turmas;
+
+    @ManyToOne
+    @JoinColumn(name = "id_student")
+    private AlunoEntity aluno;
+
+    @ManyToOne
+    @JoinColumn(name = "id_class")
+    private TurmaEntity turma;
 }
