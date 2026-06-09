@@ -79,4 +79,12 @@ public class Ocorrencia {
     public OcorrenciaEnum getOcorrenciaEnum() {
         return ocorrenciaEnum;
     }
+
+    public void setStudent(Aluno student) {
+        this.student = student;
+    }
+
+    public void setTurma(Turma turma) {
+        this.turma = turma;
+    }
 }
