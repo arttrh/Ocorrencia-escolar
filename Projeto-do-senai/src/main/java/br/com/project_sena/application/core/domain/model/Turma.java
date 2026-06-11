@@ -26,8 +26,9 @@
         public Turma(Long id, String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
             this.id = id;
             this.className = className;
+            this.turmaTurnoEnum = turnoTurma;
             this.classYear = classYear;
-            this.turmaEnum = turmaEnum;
+            this.turmaEnum = TurmaEnum.ATIVA;
             this.semestry = semestry;
         }
 

@@ -56,7 +56,7 @@ public class TurmaController implements UsuarioDomainController<
         return ResponseEntity.created(uri).body(response);
     }
 
-    @PostMapping("/vincular")
+    @PostMapping("/vincular/aluno/{id}")
     public ResponseEntity<VincularDetailsDTO> cadastrarVinculo(){
         return null;
     }
