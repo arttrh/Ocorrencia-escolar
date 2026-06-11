@@ -11,9 +11,6 @@ import br.com.project_sena.exception.type.Aluno.AlunoNotFoundException;
 import br.com.project_sena.exception.type.Turma.TurmaCanceladaException;
 import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
