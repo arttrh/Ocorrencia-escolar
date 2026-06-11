@@ -2,21 +2,18 @@ package br.com.project_sena.application.core.domain.model;
 
 public class CategoriaOcorrencia {
     private Long id;
-    private CategoriaOcorrencia categoriaOcorrencia;
-
-
-    public CategoriaOcorrencia() {
-    }
+    private String nameCategory;
 
     public CategoriaOcorrencia(Long id, String nameCategory) {
         this.id = id;
+        this.nameCategory = nameCategory;
     }
 
     public Long getId() {
         return id;
     }
 
-    public CategoriaOcorrencia getCategoriaOcorrencia() {
-        return categoriaOcorrencia;
+    public String getNameCategory() {
+        return nameCategory;
     }
 }

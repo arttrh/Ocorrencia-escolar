@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Ocorrencia {
@@ -17,6 +18,8 @@ public class Ocorrencia {
     private LocalDate dataOcorrencia;
     private LocalTime time;
     private String descricaoDaOcorrencia;
+    private LocalDateTime createdAt;
+
 
     //Enums
     private OcorrenciaEnum ocorrenciaEnum;
@@ -32,7 +35,8 @@ public class Ocorrencia {
                       LocalDate dataOcorrencia,
                       LocalTime time,
                       String descricaoDaOcorrencia,
-                      OcorrenciaEnum ocorrenciaEnum) {
+                      OcorrenciaEnum ocorrenciaEnum,
+                      LocalDateTime createdAt) {
         this.id = id;
         this.turma = turma;
         this.student = student;
@@ -42,6 +46,7 @@ public class Ocorrencia {
         this.time = time;
         this.descricaoDaOcorrencia = descricaoDaOcorrencia;
         this.ocorrenciaEnum = ocorrenciaEnum;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -86,5 +91,9 @@ public class Ocorrencia {
 
     public void setTurma(Turma turma) {
         this.turma = turma;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 }

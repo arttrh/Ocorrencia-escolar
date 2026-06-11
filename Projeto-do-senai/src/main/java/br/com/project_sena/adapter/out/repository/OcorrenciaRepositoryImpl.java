@@ -6,6 +6,7 @@ import br.com.project_sena.application.core.domain.model.Ocorrencia;
 import br.com.project_sena.application.port.out.OcorrenciaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -29,5 +30,11 @@ public class OcorrenciaRepositoryImpl implements OcorrenciaRepository {
         return ocorrenciaJpaRepository.findById(id).map(mapperEntity::toDomain);
     }
 
-
+    @Override
+    public List<Ocorrencia> findAll() {
+        return ocorrenciaJpaRepository.findAll()
+                .stream()
+                .map(mapperEntity::toDomain)
+                .toList();
+    }
 }

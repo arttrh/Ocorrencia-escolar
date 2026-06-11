@@ -18,12 +18,10 @@ public class OcorrenciaService {
 
     public OcorrenciaService(OcorrenciaRepository repository, AlunoRepository alunoRepository, TurmaRepository turmaRepository){
         this.repository = repository;
-        this.alunoRepository = alunoRepository;
-        this.turmaRepository = turmaRepository;
     }
 
     public Ocorrencia cadastraOcorrencia(){
-
+        return null;
     }
 
 }

@@ -32,7 +32,8 @@ public class OcorrenciaMapperEntity {
                 entity.getDataOcorrencia(),
                 entity.getTime(),
                 entity.getDescricaoDaOcorrencia(),
-                entity.getOcorrenciaEnum()
+                entity.getOcorrenciaEnum(),
+                entity.getCreatedAt()
         );
     }
 
@@ -46,7 +47,8 @@ public class OcorrenciaMapperEntity {
                 ocorrencia.getDataOcorrencia(),
                 ocorrencia.getTime(),
                 ocorrencia.getDescricaoDaOcorrencia(),
-                ocorrencia.getOcorrenciaEnum()
+                ocorrencia.getOcorrenciaEnum(),
+                ocorrencia.getCreatedAt()
         );
     }
 }
