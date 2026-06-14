@@ -17,5 +17,9 @@ public interface UsuarioRepository {
 
     void delete(Long id);
 
-    UserDetails loadUserByUsername(String login);
+    void reativar(Long id);
+
+    Usuario findByEmail(String email);
+
+    Boolean existsByEmail(String email);
 }

@@ -13,23 +13,30 @@ import java.util.List;
 public class Usuario implements UserDetails {
     private Long id;
     private String name;
+    private String email;
     private String password;
-    private String login;
 
     //Enums
-    private UsuarioEnum usuarioEnum;
+    private UsuarioEnum usuarioEnum = UsuarioEnum.ATIVO;
     private PerfilEnum perfil;
 
-
-    public Usuario(Long id, String name, String password, String login, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
+    public Usuario(Long id, String name, String email, String password, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.password = password;
-        this.login = login;
         this.perfil = perfil;
         this.usuarioEnum = usuarioEnum;
     }
 
+    public Usuario(String name, String email, String password, PerfilEnum perfil) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.perfil = perfil;
+    }
+
+    //UserDetails
     @Override
     public @Nullable String getPassword() {
         return password;
@@ -37,7 +44,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override
@@ -65,16 +72,12 @@ public class Usuario implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
     }
 
-    public Usuario() {
-
-    }
-
     public Long getId() {
         return id;
     }
 
-    public String getLogin() {
-        return login;
+    public String getEmail() {
+        return email;
     }
 
     public String getName() {
@@ -93,8 +96,8 @@ public class Usuario implements UserDetails {
         this.password = password;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setPerfil(PerfilEnum perfil) {
@@ -109,16 +112,27 @@ public class Usuario implements UserDetails {
         this.usuarioEnum = usuarioEnum;
     }
 
-    public void atualizarUsuario(Usuario usuario) {
-        if (usuario.getPassword() != null && !usuario.getPassword().isBlank()) {
-            this.password = usuario.getPassword();
+    public void atualizarUsuario(PerfilEnum perfil,
+                                 String email,
+                                 String password) {
+        if (perfil != null){
+            this.perfil = perfil;
         }
-        if (usuario.getLogin() != null && !usuario.getLogin().isBlank()) {
-            this.login = usuario.getLogin();
+        if (email != null && !email.isBlank()){
+            this.email = email;
+        }
+
+        if (password != null && !password.isBlank()){
+            this.password = password;
         }
     }
 
     public void excluir(UsuarioEnum usuarioEnum) {
         this.usuarioEnum = UsuarioEnum.INVATIVO;
     }
+
+    public void reativar(UsuarioEnum usuarioEnum){
+        this.usuarioEnum = UsuarioEnum.ATIVO;
+    }
+
 }

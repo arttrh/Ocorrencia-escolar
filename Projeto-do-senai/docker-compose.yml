@@ -1,0 +1,30 @@
+services:
+  postgres :
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ocorrenciaescolar
+      POSGRES_USER: postgres
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      JWT_SECRET: 27032008
+      POSTGRES_PASSWORD: 27032008
+      DB_HOST: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ocorrenciaescolar
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 27032008
+    depends_on:
+       postgres:
+         condition: service_healthy

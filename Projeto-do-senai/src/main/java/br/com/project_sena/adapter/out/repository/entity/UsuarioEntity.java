@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "usuario")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,17 +23,18 @@ import java.util.List;
 public class UsuarioEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario")
     private Long id;
     private String name;
+    private String email;
     private String password;
-    private String login;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "profile")
     private PerfilEnum perfil;
 
     @Enumerated(EnumType.STRING)
     private UsuarioEnum usuarioEnum;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -42,7 +43,7 @@ public class UsuarioEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return email;
     }
 
     @Override

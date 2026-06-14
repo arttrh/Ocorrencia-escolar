@@ -1,11 +1,12 @@
 package br.com.project_sena.adapter.in.web.mapper;
 
-import br.com.project_sena.adapter.in.controller.request.UserRegisterDTO;
-import br.com.project_sena.adapter.in.controller.request.UserUpdateDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
-import br.com.project_sena.adapter.in.controller.response.UserListDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
+import br.com.project_sena.adapter.in.controller.response.UserListInativosDTO;
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
-import jakarta.validation.Valid;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,12 +15,10 @@ public class UsuarioMapperDTO {
     // Front-End vai mandar um JSON e vai ser convertido para domain.
     public Usuario toDomain(UserRegisterDTO dto){
         return new Usuario(
-                null,
                 dto.name(),
+                dto.email(),
                 dto.password(),
-                dto.login(),
-                dto.perfi(),
-                dto.usuarioEnum()
+                dto.perfil()
         );
     }
 
@@ -28,19 +27,31 @@ public class UsuarioMapperDTO {
         return new UserDetailsDTO(
                 usuario.getId(),
                 usuario.getName(),
-                usuario.getLogin(),
+                usuario.getEmail(),
                 usuario.getPerfil(),
                 usuario.getUsuarioEnum()
         );
     }
 
-    // Devolvendo a lista para o Usuario
-    public UserListDTO toList(Usuario list){
-        return new UserListDTO(
+    // Devolvendo a lista para o Usuarios Ativos
+    public UserListAtivosDTO toList(Usuario list){
+        return new UserListAtivosDTO(
                 list.getId(),
                 list.getName(),
+                list.getEmail(),
                 list.getPerfil(),
                 list.getUsuarioEnum()
+        );
+    }
+
+    // Devolve a lista para Usuarios Inativos
+    public UserListInativosDTO toListInativo(Usuario list){
+        return new UserListInativosDTO(
+                list.getId(),
+                list.getName(),
+                list.getEmail(),
+                list.getUsuarioEnum(),
+                list.getPerfil()
         );
     }
 
@@ -48,10 +59,10 @@ public class UsuarioMapperDTO {
       return new Usuario(
               null,
               null,
+              dto.email(),
               dto.password(),
-              null,
               dto.perfil(),
-                null
+              UsuarioEnum.ATIVO
       );
     }
 }

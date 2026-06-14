@@ -12,7 +12,6 @@ public class Aluno {
 
     //Enum
     private AlunoEnum alunoEnum;
-
     public Aluno() {
     }
 
@@ -42,5 +41,25 @@ public class Aluno {
 
     public AlunoEnum getAlunoEnum() {
         return alunoEnum;
+    }
+
+    public void atualizarAluno(String photo, String name, LocalDate dateBirth){
+        if(photo != null && !photo.isBlank()){
+            this.photo = photo;
+        }
+        if(name != null && !name.isBlank()){
+            this.name = name;
+        }
+        if(dateBirth != null){
+            this.dateBirth = dateBirth;
+        }
+    }
+
+    public void excluir(){
+        this.alunoEnum = AlunoEnum.INVATIVO;
+    }
+
+    public void reativar(){
+        this.alunoEnum = AlunoEnum.ATIVO;
     }
 }

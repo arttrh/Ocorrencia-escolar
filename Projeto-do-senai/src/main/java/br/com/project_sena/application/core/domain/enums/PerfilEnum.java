@@ -2,8 +2,9 @@ package br.com.project_sena.application.core.domain.enums;
 
 public enum PerfilEnum {
     PROFESSOR,
-    ANALISTA_DE_QUALIDADE,
+    ANALISTA,
     COORDENADOR,
-    PROFESSOR_ADMINISTRATIVO
-
+    PROFESSOR_ADMINISTRATIVO,
+    ADMIN,
+    ADMINISTRATIVO
 }

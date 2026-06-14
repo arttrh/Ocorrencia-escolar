@@ -1,0 +1,29 @@
+package br.com.project_sena.adapter.out.repository.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.List;
+
+@Entity
+@Table(name = "vinculo")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class AlunoTurmaEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "id_student")
+    private AlunoEntity aluno;
+
+    @ManyToOne
+    @JoinColumn(name = "id_class")
+    private TurmaEntity turma;
+}

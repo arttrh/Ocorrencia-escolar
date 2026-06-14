@@ -20,23 +20,14 @@ public class AlunoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_student")
     private Long id;
     private String photo;
     private String name;
-    @Column(name = "date_of_birth")
+    @Column(name = "date_birth")
     private LocalDate dateBirth;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "aluno_enum")
     private AlunoEnum alunoEnum;
-
-    @ManyToMany
-    @JoinTable(name = "student_class",
-            joinColumns = @JoinColumn(name = "id_student"),
-            inverseJoinColumns = @JoinColumn(name = "id_class"))
-    private List<TurmaEntity> turmas;
-
-
-    public AlunoEntity(Long id, String photo, String name, LocalDate dateBirth, AlunoEnum alunoEnum) {
-
-    }
 }
