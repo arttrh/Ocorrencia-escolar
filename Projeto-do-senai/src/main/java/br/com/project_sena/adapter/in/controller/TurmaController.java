@@ -10,6 +10,8 @@ import br.com.project_sena.adapter.in.web.mapper.TurmaMapperDTO;
 import br.com.project_sena.application.core.domain.model.Turma;
 import br.com.project_sena.application.core.usecase.TurmaService;
 import br.com.project_sena.application.port.in.UsuarioDomainController;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +25,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping("/turmas")
+@Tag(name = "Turmas", description = "Gerenciamento de turmas")
 public class TurmaController implements UsuarioDomainController<
         ClassRegisterDTO,
         ClassListAtivoDTO,
@@ -42,6 +45,7 @@ public class TurmaController implements UsuarioDomainController<
         this.mapper = mapper;
     }
 
+    @Operation(summary = "Cadastrar turma", description = "Cria uma nova turma")
     @PostMapping("/cadastrar")
     public ResponseEntity<ClassDetailsDTO> cadastrar(
             @RequestBody @Valid ClassRegisterDTO dto,
@@ -56,11 +60,13 @@ public class TurmaController implements UsuarioDomainController<
         return ResponseEntity.created(uri).body(response);
     }
 
+    @Operation(summary = "Listar turmas ativas")
     @PostMapping("/vincular/aluno/{id}")
     public ResponseEntity<VincularDetailsDTO> cadastrarVinculo(){
         return null;
     }
 
+    @Operation(summary = "Excluir turma", description = "Exclusão lógica, muda status para CANCELADA")
     @GetMapping("/listar/inativo")
     public ResponseEntity<Page<ClassListAtivoDTO>> listarAtivos(
             @PageableDefault(size = 10, sort = "name", direction = Sort.Direction.DESC)
