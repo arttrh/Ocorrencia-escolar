@@ -1,7 +1,7 @@
 # 🏫 Sistema de Ocorrência Escolar
 
 <div align="center">
-  <img src="https://user-images.githubusercontent.com/your-username/school-system.png" alt="Sistema Escolar" width="500">
+  <img src="./Nano Banana 2 - Animate this pixel art isometric school scene with the following movementsStudents.png" alt="Sistema Escolar" width="500">
   
   **Um sistema completo para gerenciar ocorrências e registros escolares**
   
