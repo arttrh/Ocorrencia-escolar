@@ -3,6 +3,7 @@ package br.com.project_sena.application.core.usecase;
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Turma;
+import br.com.project_sena.application.core.usecase.validacoes.ValidarOcorrencia;
 import br.com.project_sena.application.core.usecase.validacoes.ValidarTurmaCheia;
 import br.com.project_sena.application.core.usecase.validacoes.ValidarVinculo;
 import br.com.project_sena.application.port.out.TurmaRepository;
@@ -14,32 +15,28 @@ import org.springframework.stereotype.Service;
 
 
 @Service
-public class TurmaService {
+public class TurmaService{
 
     private final TurmaRepository repository;
-    private final ValidarTurmaCheia turmaCheia;
-    private final ValidarVinculo validarTurma;
     private final ValidarVinculo validarVinculo;
+    private final ValidarTurmaCheia turmaCheia;
 
-    public TurmaService(TurmaRepository repository, ValidarVinculo validarTurma, ValidarTurmaCheia turmaCheia, ValidarVinculo validarVinculo) {
+    public TurmaService(TurmaRepository repository, ValidarVinculo validarVinculo, ValidarTurmaCheia turmaCheia, ValidarOcorrencia validarOcorrencia) {
         this.repository = repository;
-        this.validarTurma = validarTurma;
-        this.turmaCheia = turmaCheia;
         this.validarVinculo = validarVinculo;
+        this.turmaCheia = turmaCheia;
     }
 
     @Transactional
-    public Turma vincularAlunoTurma(Turma dados, Aluno aluno){
-        validarTurma.vincularAlunoATurma(aluno, dados);
-        turmaCheia.turmaCheia(dados);
-        validarVinculo.vincularAlunoATurma(aluno, dados);
-        return repository.save(dados);
+    public void vincularAlunoTurma(Turma turma, Aluno aluno){
+        validarVinculo.validar(aluno, turma);
+        turmaCheia.validar(aluno, turma);
     }
 
     @Transactional
-    public Turma cadastrar(Turma dados){
-        Turma saved = repository.save(dados);
-        turmaCheia.turmaCheia(dados);
+    public Turma cadastrar(Turma turma, Aluno aluno){
+        Turma saved = repository.save(turma);
+        turmaCheia.validar(aluno, turma);
         return saved;
     }
 
@@ -79,4 +76,5 @@ public class TurmaService {
        Turma saved = repository.save(turma);
         return saved;
     }
+
 }

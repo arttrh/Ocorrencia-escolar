@@ -23,7 +23,6 @@ public class UsuarioService {
     public Usuario cadastrar(Usuario dados) {
         dados.setPassword(passwordEncoder.encode(dados.getPassword()));
         if (usuarioRepository.existsByEmail(dados.getEmail())){
-            System.out.println("EMAIL JA EXISTE");
             throw new EmailDuplicadoException("Email ja existe no sistema");
         }
         return usuarioRepository.save(dados);

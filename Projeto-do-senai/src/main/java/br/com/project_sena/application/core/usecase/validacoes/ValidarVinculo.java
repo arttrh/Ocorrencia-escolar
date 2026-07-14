@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class ValidarVinculo {
+public class ValidarVinculo implements ValidarVinculos{
 
     private final AlunoRepository alunoRepository;
     private final TurmaRepository turmaRepository;
@@ -30,16 +30,18 @@ public class ValidarVinculo {
     }
 
     public void vincularAlunoATurma(Aluno aluno, Turma turma){
+
+    }
+
+    @Override
+    public void validar(Aluno aluno, Turma turma) {
         Aluno encontrarAluno = alunoRepository.findById(aluno.getId()).orElseThrow(() -> new AlunoNotFoundException("Aluno nao existe"));
-        log.warn("Id Aluno: {}", aluno.getId());
         Turma encontrarTurma = turmaRepository.findById(turma.getId()).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        log.warn("Id Turma: {}", turma.getId());
         if (turma.getTurmaEnum() == TurmaEnum.CANCELADA){
             throw new TurmaCanceladaException("Turma cancelada nao pode vincular aluno a esta turma");
         }
         //Predicate<Aluno> alunoAtivo = al -> aluno.getAlunoEnum().equals(AlunoEnum.ATIVO); // Validacoes em uma linha
         if (turma.getAluno().contains(aluno)){
-            log.warn("ALUNO Ja cadastrado: {}", turma.getAluno());
             throw new RuntimeException("Aluno ja cadastrado em uma turma");
         }
         List<Turma> todasAsTurmas = turmaRepository.findAll();
@@ -53,7 +55,7 @@ public class ValidarVinculo {
         }
         if (aluno.getAlunoEnum().equals(AlunoEnum.ATIVO)){
             if (turma.getTurmaEnum().equals(TurmaEnum.ATIVA)) {
-                validarTurma.turmaCheia(turma);
+                validarTurma.validar(aluno ,turma);
                 alunoRepository.save(aluno);
             }
         }

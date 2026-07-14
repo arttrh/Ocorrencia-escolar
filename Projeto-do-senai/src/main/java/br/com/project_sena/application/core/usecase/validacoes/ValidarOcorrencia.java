@@ -3,24 +3,30 @@ package br.com.project_sena.application.core.usecase.validacoes;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Ocorrencia;
 import br.com.project_sena.application.core.domain.model.Turma;
+import br.com.project_sena.application.core.usecase.validacoes.ValidarAlunoETurmaExistente.Validar;
 import br.com.project_sena.application.port.out.AlunoRepository;
 import br.com.project_sena.application.port.out.OcorrenciaRepository;
 import br.com.project_sena.application.port.out.TurmaRepository;
 import br.com.project_sena.exception.type.Aluno.AlunoNotFoundException;
-import br.com.project_sena.exception.type.Ocorrencia.OcorrenciaNotFoundException;
 import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-@RequiredArgsConstructor
-public class ValidarOcorrencia {
+public class ValidarOcorrencia implements ValidarVinculos{
     private final AlunoRepository alunoRepository;
     private final TurmaRepository turmaRepository;
     private final OcorrenciaRepository ocorrenciaRepository;
+    private final Validar validar;
+
+    public ValidarOcorrencia(AlunoRepository alunoRepository, TurmaRepository turmaRepository, OcorrenciaRepository ocorrenciaRepository, Validar validar){
+        this.alunoRepository = alunoRepository;
+        this.turmaRepository = turmaRepository;
+        this.ocorrenciaRepository = ocorrenciaRepository;
+        this.validar = validar;
+    }
 
     public void criarOcorrencia(Ocorrencia dados, Long alunoId, Long turmaId) {
 
@@ -39,14 +45,9 @@ public class ValidarOcorrencia {
         ocorrenciaRepository.save(dados);
     }
 
-    public void historicoOcorrencia(Long idOcorrencia, Long alunoId, Long turmaId){
-        Aluno aluno = alunoRepository.findById(alunoId)
-                .orElseThrow(() -> new AlunoNotFoundException("Aluno não encontrado"));
-
-        Turma turma = turmaRepository.findById(turmaId)
-                .orElseThrow(() -> new TurmaNotFoundException("Turma não encontrada"));
-        Ocorrencia ocorrencia = ocorrenciaRepository.findById(idOcorrencia).orElseThrow(
-                () -> new OcorrenciaNotFoundException("Ocorrencia nao existe"));
+    @Override
+    public void validar(Aluno aluno, Turma turma) {
+        validar.validar(aluno, turma);
         List<Ocorrencia> historicoOcorrencia = ocorrenciaRepository.findAll();
         for (Ocorrencia historico : historicoOcorrencia) {
             LocalDateTime registradoEm = historico.getCreatedAt();

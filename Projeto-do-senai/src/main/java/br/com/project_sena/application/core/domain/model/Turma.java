@@ -12,7 +12,7 @@
         private String className;
         private LocalDateTime classYear;
         private LocalDateTime semestry;
-        private Integer turmaCheia = 36;
+        private final Integer turmaCheia = 36;
 
         //Enums
         private TurmaEnum turmaEnum;
