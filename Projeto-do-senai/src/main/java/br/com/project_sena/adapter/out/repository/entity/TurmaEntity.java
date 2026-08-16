@@ -1,15 +1,22 @@
 package br.com.project_sena.adapter.out.repository.entity;
 
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 import br.com.project_sena.application.core.domain.enums.TurmaTurnoEnum;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "class")
@@ -43,4 +50,17 @@ public class TurmaEntity {
         this.turmaEnum = turmaEnum;
         this.semestry = semestry;
     }
+
+  @Override
+  public boolean equals(Object o){
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    TurmaEntity turmaEntity = (TurmaEntity) o;
+    return Objects.equals(id, turmaEntity.id);
+  }
+
+  @Override
+  public int hashCode(){
+    return Objects.hash(id);
+  }
 }

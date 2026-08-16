@@ -1,18 +1,27 @@
 package br.com.project_sena.adapter.out.repository.entity;
 
-import br.com.project_sena.application.core.domain.enums.PerfilEnum;
-import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import br.com.project_sena.application.core.domain.enums.PerfilEnum;
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "usuario")
@@ -65,4 +74,16 @@ public class UsuarioEntity implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
+  @Override
+  public boolean equals(Object o){
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    UsuarioEntity usuarioEntity = (UsuarioEntity) o;
+    return Objects.equals(id, usuarioEntity.id);
+  }
+
+  @Override
+  public int hashCode(){
+    return Objects.hash(id);
+  }
 }
