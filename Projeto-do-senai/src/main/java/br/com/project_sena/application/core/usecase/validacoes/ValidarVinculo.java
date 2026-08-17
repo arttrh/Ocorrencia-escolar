@@ -17,7 +17,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class ValidarVinculo implements ValidarVinculos{
+public class ValidarVinculo{
 
     private final AlunoRepository alunoRepository;
     private final TurmaRepository turmaRepository;
@@ -28,25 +28,19 @@ public class ValidarVinculo implements ValidarVinculos{
         this.turmaRepository = turmaRepository;
         this.validarTurma = validarTurma;
     }
-
-    public void vincularAlunoATurma(Aluno aluno, Turma turma){
-
-    }
-
-    @Override
-    public void validar(Aluno aluno, Turma turma) {
+    public void validarTurmaEAluno(Aluno aluno, Turma turma) {
         Aluno encontrarAluno = alunoRepository.findById(aluno.getId()).orElseThrow(() -> new AlunoNotFoundException("Aluno nao existe"));
         Turma encontrarTurma = turmaRepository.findById(turma.getId()).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
         if (turma.getTurmaEnum() == TurmaEnum.CANCELADA){
             throw new TurmaCanceladaException("Turma cancelada nao pode vincular aluno a esta turma");
         }
         //Predicate<Aluno> alunoAtivo = al -> aluno.getAlunoEnum().equals(AlunoEnum.ATIVO); // Validacoes em uma linha
-        if (turma.getAluno().contains(aluno)){
+        if (turma.getAluno().contains(encontrarAluno)){
             throw new RuntimeException("Aluno ja cadastrado em uma turma");
         }
         List<Turma> todasAsTurmas = turmaRepository.findAll();
         for (Turma turmarDiferentes : todasAsTurmas){
-            if (turmarDiferentes.getAluno().contains(aluno)){
+            if (turmarDiferentes.getAluno().contains(encontrarAluno)){
                 throw new RuntimeException("Aluno nao pode ser adicionado em turmaDiferente");
             }
         }
@@ -55,8 +49,8 @@ public class ValidarVinculo implements ValidarVinculos{
         }
         if (aluno.getAlunoEnum().equals(AlunoEnum.ATIVO)){
             if (turma.getTurmaEnum().equals(TurmaEnum.ATIVA)) {
-                validarTurma.validar(aluno ,turma);
-                alunoRepository.save(aluno);
+                validarTurma.validar(encontrarAluno ,encontrarTurma);
+                alunoRepository.save(encontrarAluno);
             }
         }
     }

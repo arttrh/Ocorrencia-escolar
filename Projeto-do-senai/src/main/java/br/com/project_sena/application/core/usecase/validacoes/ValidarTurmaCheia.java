@@ -6,9 +6,9 @@ import br.com.project_sena.exception.type.Turma.TurmaCheiaException;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ValidarTurmaCheia implements ValidarVinculos{
+public class ValidarTurmaCheia{
 
-    @Override
+    
     public void validar(Aluno aluno, Turma turma) {
         if (turma.getAluno().size() >= turma.getTurmaCheia()){
             throw new TurmaCheiaException("Turma ja esta lotada nao pode cadastrar usuario");

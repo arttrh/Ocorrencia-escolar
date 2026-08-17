@@ -21,8 +21,7 @@ public class ValidarTurmaEAlunoEOcorrencia{
         this.turmaRepository = turmaRepository;
         this.ocorrenciaRepository = ocorrenciaRepository;
     }
-
-  
+ 
     public void validacoes(Aluno aluno, Turma turma, Ocorrencia ocorrencia) {
         alunoRepository.findById(aluno.getId())
                 .orElseThrow(() -> new AlunoNotFoundException("Aluno nao existe"));
