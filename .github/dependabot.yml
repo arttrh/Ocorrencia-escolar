@@ -1,0 +1,8 @@
+version: 2
+updates:
+  - package-ecosystem: "maven"
+    directory: "/Projeto-do-senai"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 5
+    # opcional: ignore, labels, assignees, reviewers
