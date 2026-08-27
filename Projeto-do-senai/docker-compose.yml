@@ -1,30 +1,74 @@
+# Ambiente completo para rodar o sistema localmente.
+#
+#   docker compose up --build
+#
+# Correcoes em relacao a versao anterior:
+#   - "POSGRES_USER" estava escrito errado (faltava o T), entao a variavel era
+#     ignorada e o usuario ficava no padrao da imagem por acaso;
+#   - o Postgres era publicado em 5433 enquanto a aplicacao fora do compose
+#     procurava 5432, o que so' funcionava por engano;
+#   - JWT_SECRET e senha do banco estavam escritos no arquivo e versionados;
+#     agora vem do ambiente (use um arquivo .env, que fica fora do Git);
+#   - o RabbitMQ era exigido pelo codigo mas nao existia aqui.
+
 services:
-  postgres :
+  postgres:
     image: postgres:16-alpine
+    container_name: ocorrencia-postgres
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ocorrenciaescolar
-      POSGRES_USER: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      POSTGRES_DB: ${POSTGRES_DB:-ocorrenciaescolar}
     ports:
-      - "5433:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-ocorrenciaescolar}"]
       interval: 5s
+      timeout: 5s
+      retries: 10
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: ocorrencia-rabbitmq
+    profiles: ["messaging"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
       timeout: 5s
       retries: 5
 
   app:
     build: .
+    container_name: ocorrencia-api
     ports:
-      - "8080:8080"
+      - "${APP_PORT:-8080}:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: local
-      JWT_SECRET: 27032008
-      POSTGRES_PASSWORD: 27032008
-      DB_HOST: postgres
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ocorrenciaescolar
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 27032008
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-ocorrenciaescolar}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env (minimo 32 caracteres)}
+      APP_CORS_ALLOWED_ORIGINS: ${APP_CORS_ALLOWED_ORIGINS:-http://127.0.0.1:5500,http://localhost:5500}
+      APP_RABBIT_ENABLED: ${APP_RABBIT_ENABLED:-false}
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
     depends_on:
-       postgres:
-         condition: service_healthy
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+
+volumes:
+  postgres-data:

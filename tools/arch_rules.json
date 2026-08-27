@@ -1,0 +1,233 @@
+{
+  "$comment": [
+    "Definicao das camadas e das regras da arquitetura hexagonal deste projeto.",
+    "Editar este arquivo muda o que o scanner cobra - o codigo do scanner nao precisa mudar.",
+    "As camadas sao testadas na ordem declarada: a primeira cujo prefixo casar vence,",
+    "entao declare sempre do mais especifico para o mais generico."
+  ],
+  "base_package": "br.com.project_sena",
+  "source_roots": ["Projeto-do-senai/src/main/java"],
+
+  "layers": [
+    {
+      "id": "domain",
+      "nome": "Dominio",
+      "descricao": "Modelos, enums, value objects e excecoes de negocio",
+      "packages": ["application.core.domain"],
+      "nivel": 0
+    },
+    {
+      "id": "usecase",
+      "nome": "Casos de uso",
+      "descricao": "Orquestracao das regras de negocio",
+      "packages": ["application.core.usecase"],
+      "nivel": 1
+    },
+    {
+      "id": "port-in",
+      "nome": "Portas de entrada",
+      "descricao": "Contratos que o mundo externo invoca",
+      "packages": ["application.port.in"],
+      "nivel": 1
+    },
+    {
+      "id": "port-out",
+      "nome": "Portas de saida",
+      "descricao": "Contratos que a aplicacao exige do mundo externo",
+      "packages": ["application.port.out"],
+      "nivel": 1
+    },
+    {
+      "id": "adapter-in",
+      "nome": "Adaptadores de entrada",
+      "descricao": "Web/REST: traduz HTTP para casos de uso",
+      "packages": ["adapter.in"],
+      "nivel": 2
+    },
+    {
+      "id": "adapter-out",
+      "nome": "Adaptadores de saida",
+      "descricao": "Persistencia, seguranca, mensageria, rate limit",
+      "packages": ["adapter.out"],
+      "nivel": 2
+    },
+    {
+      "id": "config",
+      "nome": "Configuracao",
+      "descricao": "Montagem das dependencias no Spring",
+      "packages": ["config"],
+      "nivel": 3
+    },
+    {
+      "id": "bootstrap",
+      "nome": "Bootstrap",
+      "descricao": "Classe main da aplicacao",
+      "packages": [""],
+      "nivel": 3
+    }
+  ],
+
+  "regras_internas": [
+    {
+      "id": "HEX-01",
+      "titulo": "A seta aponta para dentro",
+      "de": ["domain", "usecase", "port-in", "port-out"],
+      "para_proibido": ["adapter-in", "adapter-out", "config"],
+      "severidade": "erro",
+      "explicacao": "A aplicacao nao pode conhecer seus adaptadores. Inverta com uma porta."
+    },
+    {
+      "id": "HEX-02",
+      "titulo": "O dominio e' a camada mais interna",
+      "de": ["domain"],
+      "para_proibido": ["usecase", "port-in", "port-out"],
+      "severidade": "erro",
+      "explicacao": "Modelos de dominio nao dependem de casos de uso nem de portas."
+    },
+    {
+      "id": "HEX-03",
+      "titulo": "Adaptadores nao conversam entre si",
+      "de": ["adapter-in"],
+      "para_proibido": ["adapter-out"],
+      "severidade": "erro",
+      "explicacao": "O adaptador web fala com portas, nao com entidades JPA nem com repositorios concretos."
+    },
+    {
+      "id": "HEX-04",
+      "titulo": "Portas de entrada nao implementam casos de uso",
+      "de": ["port-in"],
+      "para_proibido": ["usecase"],
+      "severidade": "erro",
+      "explicacao": "A porta declara o contrato; a implementacao vive em application.core.usecase."
+    }
+  ],
+
+  "regras_externas": [
+    {
+      "id": "FWK-01",
+      "titulo": "Dominio livre de framework",
+      "de": ["domain"],
+      "imports_proibidos": [
+        "org.springframework",
+        "jakarta.persistence",
+        "jakarta.validation",
+        "jakarta.servlet",
+        "com.fasterxml.jackson",
+        "io.swagger",
+        "com.auth0",
+        "io.github.bucket4j",
+        "lombok",
+        "org.hibernate"
+      ],
+      "severidade": "erro",
+      "explicacao": "O nucleo precisa compilar e ser testavel sem nenhum framework."
+    },
+    {
+      "id": "FWK-02",
+      "titulo": "Casos de uso livres de framework",
+      "de": ["usecase"],
+      "imports_proibidos": [
+        "org.springframework",
+        "jakarta.persistence",
+        "jakarta.servlet",
+        "com.fasterxml.jackson",
+        "io.swagger",
+        "org.hibernate"
+      ],
+      "severidade": "erro",
+      "explicacao": "Os use cases sao POJOs; o Spring os monta em config.BeanConfiguration."
+    },
+    {
+      "id": "FWK-03",
+      "titulo": "Portas sao contratos puros",
+      "de": ["port-in", "port-out"],
+      "imports_proibidos": [
+        "org.springframework",
+        "jakarta.persistence",
+        "jakarta.servlet",
+        "io.swagger",
+        "org.hibernate"
+      ],
+      "severidade": "erro",
+      "explicacao": "Page/Pageable, ResponseEntity e anotacoes JPA nao pertencem a uma porta."
+    },
+    {
+      "id": "FWK-04",
+      "titulo": "Persistencia nao vaza para a web",
+      "de": ["adapter-in"],
+      "imports_proibidos": ["jakarta.persistence", "org.springframework.data.jpa"],
+      "severidade": "erro",
+      "explicacao": "Entidades JPA e repositorios Spring Data ficam confinados ao adaptador de saida."
+    }
+  ],
+
+  "regras_de_nomenclatura": [
+    {
+      "id": "NOM-01",
+      "titulo": "Anotacao no lugar certo",
+      "anotacao": "@Entity",
+      "packages_permitidos": ["adapter.out.persistence.entity"],
+      "severidade": "erro"
+    },
+    {
+      "id": "NOM-02",
+      "titulo": "Controllers no adaptador web",
+      "anotacao": "@RestController",
+      "packages_permitidos": ["adapter.in.web.controller"],
+      "severidade": "erro"
+    },
+    {
+      "id": "NOM-03",
+      "titulo": "@Service/@Component fora do nucleo",
+      "anotacao": "@Service",
+      "packages_proibidos": ["application"],
+      "severidade": "erro",
+      "explicacao": "Anotar o nucleo com estereotipos Spring o acopla ao container."
+    },
+    {
+      "id": "NOM-04",
+      "titulo": "Excecoes de negocio no dominio",
+      "sufixo_classe": "Exception",
+      "packages_permitidos": ["application.core.domain.exception"],
+      "severidade": "erro"
+    },
+    {
+      "id": "NOM-05",
+      "titulo": "Portas de saida sao interfaces",
+      "packages": ["application.port.out"],
+      "exige_interface": true,
+      "severidade": "erro"
+    }
+  ],
+
+  "regras_de_higiene": [
+    {
+      "id": "HIG-01",
+      "titulo": "Sem System.out/System.err",
+      "padrao": "System\\.(out|err)\\.print",
+      "severidade": "aviso",
+      "explicacao": "Use um logger: System.out nao tem nivel, contexto nem destino configuravel."
+    },
+    {
+      "id": "HIG-02",
+      "titulo": "Sem printStackTrace",
+      "padrao": "\\.printStackTrace\\(\\)",
+      "severidade": "aviso",
+      "explicacao": "Registre a excecao pelo logger para que ela chegue ao agregador de logs."
+    },
+    {
+      "id": "HIG-03",
+      "titulo": "Sem segredo escrito no codigo",
+      "padrao": "(?i)(senha|password|secret|token)\\s*=\\s*\"[^\"]{8,}\"",
+      "severidade": "aviso",
+      "explicacao": "Segredos vem de variavel de ambiente, nunca do fonte."
+    },
+    {
+      "id": "HIG-04",
+      "titulo": "Nao lance RuntimeException generica",
+      "padrao": "throw new RuntimeException\\(",
+      "severidade": "aviso",
+      "explicacao": "Use uma excecao de dominio: o handler global sabe traduzi-la para o status certo."
+    }
+  ]
+}

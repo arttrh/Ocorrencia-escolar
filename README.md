@@ -2,307 +2,361 @@
 
 <div align="center">
   <img src="./Nano Banana 2 - Animate this pixel art isometric school scene with the following movementsStudents.png" alt="Sistema Escolar" width="500">
-  
-  **Um sistema completo para gerenciar ocorrências e registros escolares**
-  
-  ![Java](https://img.shields.io/badge/Java-17+-ED8936?style=for-the-badge&logo=java)
-  ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3+-6DB33F?style=for-the-badge&logo=spring)
+
+  **Registro e acompanhamento de ocorrências disciplinares, alunos e turmas**
+
+  ![Java](https://img.shields.io/badge/Java-25-ED8936?style=for-the-badge&logo=openjdk)
+  ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0-6DB33F?style=for-the-badge&logo=spring)
+  ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql)
   ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker)
 </div>
 
 ---
 
-## 📋 Sobre o Projeto
+## 📋 Sobre
 
-O **Sistema de Ocorrência Escolar** é uma aplicação desenvolvida em **Java com Spring Boot** para gerenciar e registrar ocorrências escolares, turmas e alunos de forma eficiente e centralizada.
+API REST em **arquitetura hexagonal** para gestão de ocorrências escolares. O núcleo
+de regras de negócio não depende de Spring, JPA nem HTTP — esses são detalhes plugados
+por adaptadores nas bordas.
 
-### ✨ Funcionalidades
+O front-end vive em [`Sistema-ocorrencia-frontEnd`](https://github.com/arttrh/Sistema-ocorrencia-frontEnd).
 
-- ✅ Cadastro e gerenciamento de turmas
-- ✅ Controle de alunos e suas informações
-- ✅ Registro e acompanhamento de ocorrências
-- ✅ Sistema de vinculação entre alunos e turmas
-- ✅ Autenticação e controle de acesso
-- ✅ Rate limiting para proteção da API
-- ✅ Paginação e filtros avançados
+### Funcionalidades
+
+| Recurso | O que faz |
+|---|---|
+| **Usuários** | Cadastro, perfis de acesso, troca de senha, ativação/inativação |
+| **Alunos** | Cadastro, foto, matrícula em turma, inativação lógica |
+| **Turmas** | Cadastro por turno/ano/semestre, capacidade máxima, cancelamento |
+| **Ocorrências** | Registro, atualização, máquina de estados do atendimento, histórico por aluno, cancelamento lógico |
+| **Dashboard** | Totais por situação e agregações por categoria, tipo, turma e aluno |
+| **Segurança** | JWT, autorização por perfil, rate limit no login |
 
 ---
 
-## 🚀 Como Rodar
+## 🏛️ Arquitetura
+
+```
+br.com.project_sena
+│
+├── application/                    ← NÚCLEO (sem framework)
+│   ├── core/
+│   │   ├── domain/
+│   │   │   ├── model/              Usuario, Aluno, Turma, Ocorrencia…
+│   │   │   ├── enums/              situações, perfis, turnos
+│   │   │   ├── vo/                 Pagina, PaginaRequest, ResumoOcorrencias
+│   │   │   └── exception/          exceções de negócio
+│   │   └── usecase/                orquestração + validações
+│   └── port/
+│       ├── in/                     o que a aplicação oferece (use cases)
+│       └── out/                    o que a aplicação exige (repos, token, eventos…)
+│
+├── adapter/                        ← BORDAS
+│   ├── in/web/                     controllers, DTOs, mappers, filtros, handler de erro
+│   └── out/
+│       ├── persistence/            entidades JPA, Spring Data, mappers
+│       ├── security/               JWT, BCrypt
+│       ├── ratelimit/              Bucket4j
+│       ├── messaging/              RabbitMQ (ou log)
+│       └── transaction/            unidade de trabalho
+│
+└── config/                         ← RAIZ DE COMPOSIÇÃO (só o Spring mora aqui)
+```
+
+**A regra é uma só: as setas apontam para dentro.** Os adaptadores conhecem a
+aplicação; a aplicação conhece apenas as próprias portas.
+
+Isso é verificado automaticamente de duas formas — veja
+[Verificação da arquitetura](#-verificação-da-arquitetura).
+
+---
+
+## 🚀 Como rodar
 
 ### Pré-requisitos
 
-- **Java 17+**
-- **Maven 3.8+**
-- **Docker e Docker Compose** (opcional)
-- **PostgreSQL 14+** (ou outro banco de dados configurado)
+- **Java 25**
+- **Maven 3.9+** (ou use o `./mvnw` incluso)
+- **Docker + Docker Compose** (caminho mais rápido)
+- **PostgreSQL 16** (se for rodar sem Docker)
 
-### Instalação Local
-
-#### 1. Clone o repositório
+### Com Docker (recomendado)
 
 ```bash
-git clone https://github.com/rthurlucas/Sistema-de-ocorr-ncia-escolar.git
-cd Sistema-de-ocorr-ncia-escolar
+cp Projeto-do-senai/.env.example Projeto-do-senai/.env
+# edite o .env: defina POSTGRES_PASSWORD e um JWT_SECRET de 32+ caracteres
+#   openssl rand -base64 48
+
+cd Projeto-do-senai
+docker compose up --build
 ```
 
-#### 2. Configure as variáveis de ambiente
+A API sobe em `http://localhost:8080`. Para incluir o RabbitMQ:
 
-Crie um arquivo `.env` na raiz do projeto ou configure as variáveis de sistema:
-
-```env
-# Banco de Dados
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/escola
-SPRING_DATASOURCE_USERNAME=seu_usuario
-SPRING_DATASOURCE_PASSWORD=sua_senha
-
-# JPA/Hibernate
-SPRING_JPA_HIBERNATE_DDL_AUTO=update
-
-# Server
-SERVER_PORT=8080
+```bash
+docker compose --profile messaging up --build
 ```
 
-#### 3. Navegue para a pasta do projeto
+### Sem Docker
+
+```bash
+createdb ocorrenciaescolar
+
+export SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/ocorrenciaescolar
+export SPRING_DATASOURCE_USERNAME=postgres
+export SPRING_DATASOURCE_PASSWORD=sua-senha
+export JWT_SECRET=$(openssl rand -base64 48)
+
+cd Projeto-do-senai
+./mvnw spring-boot:run
+```
+
+O Flyway aplica as migrations na subida. O primeiro acesso usa o administrador
+criado na migration `V1`:
+
+| Login | Senha |
+|---|---|
+| `admin@sistema.com` | *(a definida na carga inicial — troque no primeiro acesso)* |
+
+### Configuração
+
+Tudo por variável de ambiente; os padrões estão em `application.yml`.
+
+| Variável | Padrão | Para que serve |
+|---|---|---|
+| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://localhost:5432/ocorrenciaescolar` | Conexão com o banco |
+| `SPRING_DATASOURCE_USERNAME` / `_PASSWORD` | `postgres` | Credenciais do banco |
+| `JWT_SECRET` | — **obrigatório** | Assinatura do token (mín. 32 caracteres) |
+| `JWT_EXPIRATION_HOURS` | `2` | Validade do token |
+| `APP_CORS_ALLOWED_ORIGINS` | `http://127.0.0.1:5500,http://localhost:5500` | Origens do front |
+| `APP_TRUSTED_PROXY` | `false` | Confiar em `X-Forwarded-For` (só atrás de proxy reverso) |
+| `LOGIN_RATE_LIMIT_TENTATIVAS` | `5` | Tentativas de login por janela |
+| `LOGIN_RATE_LIMIT_JANELA` | `1m` | Duração da janela |
+| `APP_RABBIT_ENABLED` | `false` | Publicar eventos no RabbitMQ |
+
+---
+
+## 🔌 API
+
+Documentação interativa em `http://localhost:8080/swagger-ui.html`.
+
+Toda requisição (exceto `POST /login`) exige `Authorization: Bearer <token>`.
+
+### Autenticação
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/login` | `{login, password}` → `{tokenJWT, id, login, role}` |
+
+### Usuários — `ADMIN`
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/users` | Cadastrar |
+| `GET` | `/users` | Listar ativos (paginado) |
+| `GET` | `/users/inactive` | Listar inativos |
+| `GET` | `/users/roles` | Perfis disponíveis |
+| `GET` | `/users/{id}` | Detalhar |
+| `PUT` | `/users` | Atualizar (parcial) |
+| `PATCH` | `/users` | Alterar perfil de acesso |
+| `PATCH` | `/users/password` | Trocar senha *(qualquer autenticado, só a própria)* |
+| `DELETE` | `/users/{id}` | Inativar |
+| `PATCH` | `/users/{id}/reactivate` | Reativar |
+
+### Alunos
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/students` | Cadastrar |
+| `GET` | `/students` | Listar ativos (paginado) |
+| `GET` | `/students/inactive` | Listar inativos |
+| `GET` | `/students/{id}` | Detalhar |
+| `PUT` | `/students` | Atualizar (parcial) |
+| `PATCH` | `/students/{id}/image` | Enviar foto (multipart, campo `image`) |
+| `DELETE` | `/students/{id}` | Inativar |
+| `PATCH` | `/students/{id}/reactivate` | Reativar |
+
+### Turmas
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/schoolclasses` | Cadastrar |
+| `GET` | `/schoolclasses` | Listar ativas (paginado) |
+| `GET` | `/schoolclasses/canceled` | Listar canceladas |
+| `GET` | `/schoolclasses/shifts` · `/semesters` | Turnos e semestres |
+| `GET` | `/schoolclasses/{id}` | Detalhar |
+| `PUT` | `/schoolclasses` | Atualizar (parcial) |
+| `DELETE` | `/schoolclasses/{id}` | Cancelar |
+| `PATCH` | `/schoolclasses/{id}/reactivate` | Reativar |
+| `POST` | `/schoolclasses/{id}/students` | Matricular aluno |
+| `GET` | `/schoolclasses/{id}/students` | Listar alunos da turma |
+
+### Ocorrências
+
+| Método | Rota | Descrição |
+|---|---|---|
+| `POST` | `/incidents` | Registrar |
+| `GET` | `/incidents` | Listar (paginado, exclui canceladas) |
+| `GET` | `/incidents/{id}` | Detalhar |
+| `PUT` | `/incidents` | Atualizar (parcial) |
+| `PATCH` | `/incidents/status` | Mudar a situação |
+| `DELETE` | `/incidents/{id}` | Cancelar (exclusão lógica) |
+| `GET` | `/incidents/status` | Situações possíveis |
+| `GET` | `/incidents/status/{slug}` | Filtrar por situação |
+| `GET` | `/incidents/categories` · `/types/{categoria}` | Catálogo |
+| `GET` | `/incidents/summary` | Resumo do dashboard |
+| `GET` | `/incidents/students/{id}/history` | Histórico do aluno |
+
+### Máquina de estados da ocorrência
+
+```
+                    ┌──────────────┐
+                    │  AGUARDANDO  │  (waiting)
+                    └──────┬───────┘
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+        ┌──────────┐ ┌──────────┐ ┌──────────┐
+        │ ATENDENDO│◄►│  ATIVA   │ │ FECHADA  │ ← final
+        └────┬─────┘ └────┬─────┘ └──────────┘
+             └──────┬─────┘
+          ┌─────────┴─────────┐
+          ▼                   ▼
+   ┌─────────────┐   ┌────────────────┐
+   │  RESOLVIDA  │   │ NAO_RESOLVIDA  │  ← finais
+   └─────────────┘   └────────────────┘
+```
+
+Situações finais não voltam atrás. Cancelamento é ortogonal ao status: marca
+`deleted` e some das listagens, mas o registro fica no histórico.
+
+### Formato de erro
+
+Todas as respostas de erro têm o mesmo corpo:
+
+```json
+{
+  "timestamp": "2026-08-27T10:15:30",
+  "status": 400,
+  "error": "Bad Request",
+  "message": "Aluno Bruno Lima nao esta matriculado na turma DS-01",
+  "path": "/incidents",
+  "fields": [{ "field": "description", "message": "Descricao e' obrigatoria" }]
+}
+```
+
+---
+
+## 🧪 Testes
 
 ```bash
 cd Projeto-do-senai
+./mvnw test
 ```
 
-#### 4. Compile o projeto com Maven
+**186 testes** distribuídos em:
+
+| Camada | O que cobre |
+|---|---|
+| **Domínio** (`domain/`) | Regras puras: máquina de estados, capacidade da turma, política de senha |
+| **Casos de uso** (`usecase/`) | Orquestração contra dublês em memória das portas |
+| **Integração** (`integration/`) | Contexto Spring completo, MockMvc, banco H2 |
+| **Contrato** (`ContratoDoFrontEndIT`) | Rotas, campos e formatos que o front realmente consome |
+| **Segurança** (`security/`) | JWT, perfis, rate limit, CORS, vazamento em erros |
+| **BDD** (`bdd/`) | 17 cenários Gherkin em português |
+| **Arquitetura** (`architecture/`) | 14 regras ArchUnit |
+| **Desempenho** (`performance/`) | Contagem de SQL (N+1), latência, concorrência |
+
+Relatório BDD em `target/cucumber-report.html`.
+
+Para pular os testes de desempenho (úteis mas sensíveis à máquina):
 
 ```bash
-mvn clean install
+./mvnw test -Dgroups='!performance'
 ```
 
-#### 5. Execute a aplicação
+---
+
+## 🔍 Verificação da arquitetura
+
+Duas ferramentas complementares:
+
+### 1. Teste ArchUnit — roda no build
 
 ```bash
-mvn spring-boot:run
+./mvnw test -Dtest=ArquiteturaHexagonalTest
 ```
 
-A aplicação estará disponível em: `http://localhost:8080`
+Quebra o build quando um import atravessa uma fronteira proibida.
 
----
-
-### 🐳 Rodando com Docker
-
-#### 1. Build da imagem
+### 2. Scanner de linha de comando — varre os fontes
 
 ```bash
-docker build -t sistema-escolar .
+python3 tools/arch_scan.py                      # relatório no terminal
+python3 tools/arch_scan.py --html relatorio.html
+python3 tools/arch_scan.py --json saida.json    # para consumo por CI
+python3 tools/arch_scan.py --strict             # avisos também falham
 ```
 
-#### 2. Execute o container
+O scanner lê os `.java` diretamente, então:
 
-```bash
-docker run -p 8080:8080 \
-  -e SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/escola \
-  -e SPRING_DATASOURCE_USERNAME=postgres \
-  -e SPRING_DATASOURCE_PASSWORD=password \
-  sistema-escolar
-```
+- aponta **arquivo e linha** do import que viola a regra;
+- desenha o **mapa das camadas** e a matriz de dependências;
+- funciona **mesmo com o projeto sem compilar**;
+- as regras vivem em `tools/arch_rules.json` — editar o JSON muda o que é cobrado,
+  sem tocar no código do scanner.
 
-#### 3. Ou use Docker Compose (se disponível)
-
-```bash
-docker-compose up -d
-```
-
----
-
-## 📁 Estrutura do Projeto
+Saída:
 
 ```
-Projeto-do-senai/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── br/com/project_sena/
-│   │   │       ├── adapter/
-│   │   │       │   ├── in/          # Controllers e DTOs
-│   │   │       │   └── out/         # Repositórios e Mappers
-│   │   │       ├── application/
-│   │   │       │   ├── core/        # Domain models e use cases
-│   │   │       │   └── port/        # Interfaces
-│   │   │       └── config/          # Configurações (Security, Rate Limit)
-│   │   └── resources/
-│   │       └── application.yml
-│   └── test/
-├── pom.xml
-└── Dockerfile
+CAMADAS
+Dominio                      43 arquivo(s)   Modelos, enums, value objects e excecoes
+  Casos de uso               14 arquivo(s)   Orquestracao das regras de negocio
+  ...
+
+DEPENDENCIAS ENTRE CAMADAS
+  Casos de uso             --> Dominio                  (55)
+  Adaptadores de entrada   --> Portas de entrada        (19)
+  --> para dentro ou lateral (ok)   ==> para fora (violacao)
+
+VIOLACOES
+  Nenhuma violacao encontrada.
 ```
 
----
-
-## 🔌 Endpoints Principais
-
-### Turmas
-- `POST /turmas/cadastrar` - Criar nova turma
-- `GET /turmas/listar/ativo` - Listar turmas ativas
-- `GET /turmas/listar/inativo` - Listar turmas inativas
-- `GET /turmas/detalhar/{id}` - Detalhes de uma turma
-- `PUT /turmas/atualizar/{id}` - Atualizar turma
-- `DELETE /turmas/excluir/{id}` - Deletar turma
-- `PATCH /turmas/reativar/{id}` - Reativar turma
-- `POST /turmas/vincular/{id}/{id}` - Vincular aluno à turma
+Regras cobertas: direção das dependências (`HEX-*`), isolamento de framework
+(`FWK-*`), convenções de pacote e nomenclatura (`NOM-*`) e higiene de código
+(`HIG-*`).
 
 ---
 
-## 🔐 Autenticação
+## 📦 Stack
 
-O sistema implementa segurança com:
-- **Spring Security** para autenticação
-- **Rate Limiting** para proteção contra abuso
-- **Validação de entrada** em todos os endpoints
+| Camada | Tecnologia |
+|---|---|
+| Linguagem | Java 25 |
+| Framework | Spring Boot 4.0 (WebMVC, Security, Data JPA, Validation, Actuator) |
+| Banco | PostgreSQL 16 + Flyway |
+| Token | java-jwt (HMAC-256) |
+| Rate limit | Bucket4j |
+| Mensageria | Spring AMQP / RabbitMQ *(opcional)* |
+| Documentação | springdoc-openapi (Swagger UI) |
+| Testes | JUnit 5, MockMvc, H2, ArchUnit, Cucumber |
 
 ---
 
-## 📊 Banco de Dados
+## 📁 Estrutura do repositório
 
-### Tabelas principais
-
-```sql
--- Turmas (Classes)
-CREATE TABLE class (
-    id_class BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    teacher_id BIGINT,
-    status VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- Alunos (Students)
-CREATE TABLE student (
-    id_student BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    photo VARCHAR(255),
-    date_birth DATE,
-    aluno_enum VARCHAR(50),
-    id_class BIGINT REFERENCES class(id_class)
-);
 ```
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-| Tecnologia | Versão | Propósito |
-|-----------|--------|----------|
-| Java | 17+ | Linguagem principal |
-| Spring Boot | 3.x | Framework |
-| Spring Security | 6.x | Autenticação |
-| JPA/Hibernate | 6.x | ORM |
-| PostgreSQL | 14+ | Banco de dados |
-| Docker | Latest | Containerização |
-| Maven | 3.8+ | Gerenciador de dependências |
-
----
-
-## 📝 Exemplos de Uso
-
-### Criar uma nova turma
-
-```bash
-curl -X POST http://localhost:8080/turmas/cadastrar \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "9º Ano A",
-    "teacher_id": 1,
-    "status": "ATIVO"
-  }'
+.
+├── Projeto-do-senai/          Aplicação Spring Boot
+│   ├── src/main/java/         Código
+│   ├── src/main/resources/    application.yml + migrations Flyway
+│   ├── src/test/java/         Testes (unidade, integração, BDD, arquitetura, carga)
+│   ├── src/test/resources/    application-test.yml + features Gherkin
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   └── .env.example
+├── tools/
+│   ├── arch_scan.py           Scanner de arquitetura
+│   └── arch_rules.json        Definição das camadas e regras
+└── .github/workflows/ci.yml   Arquitetura · testes · migrations
 ```
-
-### Listar turmas ativas
-
-```bash
-curl http://localhost:8080/turmas/listar/ativo?page=0&size=10
-```
-
-### Obter detalhes de uma turma
-
-```bash
-curl http://localhost:8080/turmas/detalhar/1
-```
-
----
-
-## 🐛 Troubleshooting
-
-### Erro: "Connection refused" ao banco de dados
-- Certifique-se de que o PostgreSQL está rodando
-- Verifique as credenciais no arquivo `.env`
-
-### Erro de compilação Java
-- Limpe o cache: `mvn clean`
-- Verifique a versão do Java: `java -version`
-- Deve ser Java 17 ou superior
-
-### Porta 8080 já em uso
-- Altere a porta em `application.yml`:
-  ```yaml
-  server:
-    port: 8081
-  ```
-
----
-
-## 📚 Documentação Adicional
-
-- [Spring Boot Documentation](https://spring.io/projects/spring-boot)
-- [Spring Security Guide](https://spring.io/guides/gs/securing-web/)
-- [Docker Documentation](https://docs.docker.com/)
-
----
-
-## 👨‍💻 Desenvolvimento
-
-### Padrões de Código
-
-Este projeto segue **Clean Architecture** com camadas bem definidas:
-
-- **Adapter In**: Controllers e DTOs de entrada
-- **Adapter Out**: Repositórios e mapeadores
-- **Application Core**: Casos de uso e entidades de domínio
-- **Config**: Configurações globais
-
-### Executar Testes
-
-```bash
-mvn test
-```
-
----
-
-## 📄 Licença
-
-Este projeto é licenciado sob a [MIT License](LICENSE) - veja o arquivo LICENSE para mais detalhes.
-
----
-
-## 👤 Autor
-
-**Raul Lucas**  
-GitHub: [@rthurlucas](https://github.com/rthurlucas)
-
----
-
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Para contribuir:
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
----
-
-<div align="center">
-  
-**Desenvolvido com ❤️ para fins educacionais - SENAI**
-
-⭐ Se este projeto foi útil, deixe uma estrela!
-
-</div>

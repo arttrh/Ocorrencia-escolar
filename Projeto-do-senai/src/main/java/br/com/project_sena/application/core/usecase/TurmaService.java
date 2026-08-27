@@ -1,80 +1,114 @@
 package br.com.project_sena.application.core.usecase;
 
+import java.util.List;
+
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+import br.com.project_sena.application.core.domain.exception.TurmaNotFoundException;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Turma;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarOcorrencia;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarTurmaCheia;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarVinculo;
+import br.com.project_sena.application.core.domain.vo.Pagina;
+import br.com.project_sena.application.core.domain.vo.PaginaRequest;
+import br.com.project_sena.application.core.usecase.validacoes.vinculo.ValidadorVinculo;
+import br.com.project_sena.application.port.in.TurmaUseCase;
+import br.com.project_sena.application.port.in.command.AtualizarTurmaCommand;
+import br.com.project_sena.application.port.in.command.CadastrarTurmaCommand;
+import br.com.project_sena.application.port.in.command.VincularAlunoCommand;
+import br.com.project_sena.application.port.out.AlunoRepository;
+import br.com.project_sena.application.port.out.TransacaoPort;
 import br.com.project_sena.application.port.out.TurmaRepository;
-import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import br.com.project_sena.application.port.out.VinculoRepository;
+import br.com.project_sena.application.core.domain.exception.AlunoNotFoundException;
 
+public class TurmaService implements TurmaUseCase {
 
-@Service
-public class TurmaService{
+    private final TurmaRepository turmaRepository;
+    private final AlunoRepository alunoRepository;
+    private final VinculoRepository vinculoRepository;
+    private final List<ValidadorVinculo> validadoresDeVinculo;
+    private final TransacaoPort transacao;
 
-    private final TurmaRepository repository;
-    private final ValidarVinculo validarVinculo;
-    private final ValidarTurmaCheia turmaCheia;
-
-    public TurmaService(TurmaRepository repository, ValidarVinculo validarVinculo, ValidarTurmaCheia turmaCheia, ValidarOcorrencia validarOcorrencia) {
-        this.repository = repository;
-        this.validarVinculo = validarVinculo;
-        this.turmaCheia = turmaCheia;
+    public TurmaService(TurmaRepository turmaRepository,
+                        AlunoRepository alunoRepository,
+                        VinculoRepository vinculoRepository,
+                        List<ValidadorVinculo> validadoresDeVinculo,
+                        TransacaoPort transacao) {
+        this.turmaRepository = turmaRepository;
+        this.alunoRepository = alunoRepository;
+        this.vinculoRepository = vinculoRepository;
+        this.validadoresDeVinculo = List.copyOf(validadoresDeVinculo);
+        this.transacao = transacao;
     }
 
-    @Transactional
-    public void vincularAlunoTurma(Turma turma, Aluno aluno){
-        validarVinculo.validar(aluno, turma);
-        turmaCheia.validar(aluno, turma);
+    @Override
+    public Turma cadastrar(CadastrarTurmaCommand command) {
+        Turma turma = Turma.nova(
+                command.name(), command.shift(), command.year(), command.semester());
+        return transacao.executar(() -> turmaRepository.save(turma));
     }
 
-    @Transactional
-    public Turma cadastrar(Turma turma, Aluno aluno){
-        Turma saved = repository.save(turma);
-        turmaCheia.validar(aluno, turma);
-        return saved;
+    @Override
+    public Turma buscar(Long id) {
+        return turmaRepository.findById(id)
+                .orElseThrow(() -> new TurmaNotFoundException("Turma nao encontrada: " + id));
     }
 
-    public Turma buscar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        return turma;
+    @Override
+    public Pagina<Turma> listar(TurmaEnum status, PaginaRequest paginaRequest) {
+        return turmaRepository.findByStatus(status, paginaRequest);
     }
 
-    public Page<Turma> listarTurmasAtivas(Pageable pageable){
-        return repository.findByTurmaEnum(pageable, TurmaEnum.ATIVA);
+    @Override
+    public Turma atualizar(AtualizarTurmaCommand command) {
+        return transacao.executar(() -> {
+            Turma turma = buscar(command.id());
+            turma.atualizarDados(
+                    command.name(), command.shift(), command.year(), command.semester());
+            return turmaRepository.save(turma);
+        });
     }
 
-    public Page <Turma> listarTurmasCanceladas(Pageable pageable){
-        return repository.findByTurmaEnum(pageable, TurmaEnum.CANCELADA);
+    @Override
+    public void cancelar(Long id) {
+        transacao.executar(() -> {
+            Turma turma = buscar(id);
+            turma.cancelar();
+            return turmaRepository.save(turma);
+        });
     }
 
-    public Turma atualizarTurma(Turma dados, Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        turma.atualizarTurma(
-                dados.getClassName(),
-                dados.getTurmaTurnoEnum(),
-                dados.getClassYear(),
-                dados.getTurmaEnum()
-        );
-        return repository.save(turma);
+    @Override
+    public Turma reativar(Long id) {
+        return transacao.executar(() -> {
+            Turma turma = buscar(id);
+            turma.reativar();
+            return turmaRepository.save(turma);
+        });
     }
 
-    public void deletar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        turma.excluir();
-        repository.save(turma);
+    /**
+     * Matricula um aluno em uma turma aplicando toda a cadeia de validadores.
+     *
+     * <p>Roda em transacao porque validar (contar matriculas) e gravar o vinculo precisam
+     * ser atomicos: sem isso, duas matriculas simultaneas poderiam estourar a capacidade.</p>
+     */
+    @Override
+    public void vincularAluno(VincularAlunoCommand command) {
+        transacao.executar(() -> {
+            Aluno aluno = alunoRepository.findById(command.alunoId())
+                    .orElseThrow(() -> new AlunoNotFoundException(
+                            "Aluno nao encontrado: " + command.alunoId()));
+            Turma turma = buscar(command.turmaId());
+
+            validadoresDeVinculo.forEach(validador -> validador.validar(aluno, turma));
+
+            vinculoRepository.vincular(aluno.getId(), turma.getId());
+            return null;
+        });
     }
 
-    public Turma reativar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        turma.reativar();
-       Turma saved = repository.save(turma);
-        return saved;
+    @Override
+    public List<Aluno> listarAlunos(Long turmaId) {
+        buscar(turmaId);
+        return vinculoRepository.listarAlunosDaTurma(turmaId);
     }
-
 }

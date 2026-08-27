@@ -1,16 +1,17 @@
 package br.com.project_sena.application.port.out;
 
-import br.com.project_sena.application.core.domain.enums.AlunoEnum;
-import br.com.project_sena.application.core.domain.model.Aluno;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import java.util.Optional;
 
+import br.com.project_sena.application.core.domain.enums.AlunoEnum;
+import br.com.project_sena.application.core.domain.model.Aluno;
+import br.com.project_sena.application.core.domain.vo.Pagina;
+import br.com.project_sena.application.core.domain.vo.PaginaRequest;
+
 public interface AlunoRepository {
-    Aluno save(Aluno dados);
+
+    Aluno save(Aluno aluno);
 
     Optional<Aluno> findById(Long id);
 
-    Page<Aluno> findByAlunoEnum(Pageable paginacao, AlunoEnum status);
+    Pagina<Aluno> findByStatus(AlunoEnum status, PaginaRequest paginaRequest);
 }
