@@ -29,15 +29,13 @@ public class TurmaService{
 
     @Transactional
     public void vincularAlunoTurma(Turma turma, Aluno aluno){
-        validarVinculo.validar(aluno, turma);
+        validarVinculo.validarTurmaEAluno(aluno, turma);
         turmaCheia.validar(aluno, turma);
     }
 
     @Transactional
-    public Turma cadastrar(Turma turma, Aluno aluno){
-        Turma saved = repository.save(turma);
-        turmaCheia.validar(aluno, turma);
-        return saved;
+    public Turma cadastrar(Turma turma){
+        return repository.save(turma);
     }
 
     public Turma buscar(Long id){
