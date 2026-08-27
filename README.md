@@ -307,7 +307,7 @@ Este projeto segue **arquitetura hexagonal** (ports & adapters):
 - **application/port**: interfaces de entrada (o que pedem ao domínio) e de saída (o que o domínio precisa)
 - **adapter/in**: controllers REST, requests e responses
 - **adapter/out**: persistência JPA, entidades e mappers
-- **config**: security, rate limit, RabbitMQ
+- **config**: security, filtro JWT e rate limit
 
 O ponto do desenho é esse: trocar PostgreSQL por outro banco, ou REST por outro
 transporte, é mexer só em `adapter/`.
