@@ -24,7 +24,6 @@ public class OcorrenciaService {
     }
 
     public void cadastraOcorrencia(Aluno aluno, Turma turma, Ocorrencia dados){
-        validarOcorrencia.validar(aluno, turma);
-        validarOcorrencia.criarOcorrencia(dados, aluno.getId(), turma.getId());
+        validarOcorrencia.criarOcorrencia(dados, turma, aluno);
     }
 }
