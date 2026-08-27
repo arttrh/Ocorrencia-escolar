@@ -1,0 +1,45 @@
+# Perfil dos testes automatizados.
+#
+# Banco em memoria: o ambiente de CI usado aqui nao tem Docker, entao Testcontainers
+# nao e' viavel. As migrations Flyway continuam sendo exercidas contra um Postgres
+# real no job "migrations" do workflow de CI — este perfil valida o comportamento da
+# aplicacao, nao o SQL de migracao.
+spring:
+  datasource:
+    url: jdbc:h2:mem:ocorrencia;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  flyway:
+    enabled: false
+
+app:
+  cors:
+    allowed-origins: http://localhost:5500
+  security:
+    jwt:
+      secret: segredo-de-teste-com-mais-de-32-caracteres-ok
+      expiration-hours: 1
+    trusted-proxy: false
+  rate-limit:
+    login:
+      tentativas: 3
+      janela: 1m
+      maximo-de-chaves: 100
+      habilitado: true
+  messaging:
+    rabbit:
+      enabled: false
+      queue: teste.audit
+
+logging:
+  level:
+    br.com.project_sena: WARN
+    org.hibernate: WARN

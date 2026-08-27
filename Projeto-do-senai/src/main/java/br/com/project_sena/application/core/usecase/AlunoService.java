@@ -1,66 +1,82 @@
 package br.com.project_sena.application.core.usecase;
 
 import br.com.project_sena.application.core.domain.enums.AlunoEnum;
+import br.com.project_sena.application.core.domain.exception.AlunoNotFoundException;
 import br.com.project_sena.application.core.domain.model.Aluno;
+import br.com.project_sena.application.core.domain.vo.Pagina;
+import br.com.project_sena.application.core.domain.vo.PaginaRequest;
+import br.com.project_sena.application.port.in.AlunoUseCase;
+import br.com.project_sena.application.port.in.command.AlterarFotoAlunoCommand;
+import br.com.project_sena.application.port.in.command.AtualizarAlunoCommand;
+import br.com.project_sena.application.port.in.command.CadastrarAlunoCommand;
 import br.com.project_sena.application.port.out.AlunoRepository;
-import br.com.project_sena.exception.type.Aluno.AlunoExistingException;
-import br.com.project_sena.exception.type.Aluno.AlunoNotFoundException;
-import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
+import br.com.project_sena.application.port.out.TransacaoPort;
 
-@Service
-public class AlunoService {
+public class AlunoService implements AlunoUseCase {
 
-    private AlunoRepository alunoRepository;
+    private final AlunoRepository alunoRepository;
+    private final TransacaoPort transacao;
 
-    public AlunoService(AlunoRepository alunoRepository) {
+    public AlunoService(AlunoRepository alunoRepository, TransacaoPort transacao) {
         this.alunoRepository = alunoRepository;
+        this.transacao = transacao;
     }
 
-    @Transactional
-    public Aluno cadastrar(Aluno dados){
-       Aluno saved = alunoRepository.save(dados);
-       return saved;
+    @Override
+    public Aluno cadastrar(CadastrarAlunoCommand command) {
+        return transacao.executar(
+                () -> alunoRepository.save(Aluno.novo(command.name(), command.birthDate())));
     }
 
-    public Aluno buscar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno nao encontrado"));
-        return aluno;
+    @Override
+    public Aluno buscar(Long id) {
+        return alunoRepository.findById(id)
+                .orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado: " + id));
     }
 
-    public Page<Aluno> listarAtivos(Pageable paginacao){
-        return alunoRepository.findByAlunoEnum(paginacao, AlunoEnum.ATIVO);
+    @Override
+    public Pagina<Aluno> listar(AlunoEnum status, PaginaRequest paginaRequest) {
+        return alunoRepository.findByStatus(status, paginaRequest);
     }
 
-    public Page<Aluno> listarInativos(Pageable paginacao){
-        return alunoRepository.findByAlunoEnum(paginacao, AlunoEnum.INVATIVO);
+    /**
+     * A versao anterior carregava o aluno do banco, ignorava o resultado e salvava o
+     * objeto vindo do DTO — o que zerava a foto e o status a cada atualizacao. Aqui a
+     * alteracao e' aplicada sobre a entidade carregada.
+     */
+    @Override
+    public Aluno atualizar(AtualizarAlunoCommand command) {
+        return transacao.executar(() -> {
+            Aluno aluno = buscar(command.id());
+            aluno.atualizarDados(command.name(), command.birthDate());
+            return alunoRepository.save(aluno);
+        });
     }
 
-    @Transactional
-    public Aluno atualizar(Long id, Aluno aluno){
-        Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
-        aluno.atualizarAluno(
-                aluno.getPhoto(),
-                aluno.getName(),
-                aluno.getDateBirth()
-        );
-        return alunoRepository.save(aluno);
+    @Override
+    public Aluno alterarFoto(AlterarFotoAlunoCommand command) {
+        return transacao.executar(() -> {
+            Aluno aluno = buscar(command.id());
+            aluno.alterarFoto(command.imageUrl());
+            return alunoRepository.save(aluno);
+        });
     }
 
-    public void excluir(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao Encontrado"));
-        aluno.excluir();
-        alunoRepository.save(aluno);
+    @Override
+    public void inativar(Long id) {
+        transacao.executar(() -> {
+            Aluno aluno = buscar(id);
+            aluno.inativar();
+            return alunoRepository.save(aluno);
+        });
     }
 
-    public Aluno reativar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
-        if (aluno.getAlunoEnum() == AlunoEnum.ATIVO){
-            throw new AlunoExistingException("Aluno ja esta Ativo");
-        }
-        aluno.reativar();
-        return alunoRepository.save(aluno);
+    @Override
+    public Aluno reativar(Long id) {
+        return transacao.executar(() -> {
+            Aluno aluno = buscar(id);
+            aluno.reativar();
+            return alunoRepository.save(aluno);
+        });
     }
 }

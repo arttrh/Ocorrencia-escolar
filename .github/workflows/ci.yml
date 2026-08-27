@@ -1,26 +1,113 @@
-name: CI - Build
+name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [main, dev, "claude/**"]
   pull_request:
-    branches:
-      - main
+    branches: [main, dev]
 
 jobs:
-  build:
+  arquitetura:
+    name: Arquitetura hexagonal
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Roda antes do build: uma violacao de camada e' apontada com o arquivo e a
+      # linha exatos mesmo que o projeto nem compile.
+      - name: Escanear camadas
+        run: python3 tools/arch_scan.py --no-color --html arch-report.html
+
+      - name: Publicar relatorio
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-arquitetura
+          path: arch-report.html
+
+  testes:
+    name: Build e testes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: "25"
+          distribution: temurin
+          cache: maven
+
+      - name: Compilar e testar
+        working-directory: Projeto-do-senai
+        run: |
+          chmod +x mvnw
+          ./mvnw -B clean verify
+
+      - name: Publicar relatorios de teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-de-teste
+          path: |
+            Projeto-do-senai/target/surefire-reports/
+            Projeto-do-senai/target/cucumber-report.html
+
+  migrations:
+    name: Migrations contra Postgres
     runs-on: ubuntu-latest
 
+    # Os testes usam H2, que nao valida SQL especifico do Postgres. Este job
+    # aplica as migrations de verdade e checa se o mapeamento JPA bate com o
+    # schema resultante (ddl-auto: validate).
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: ocorrenciaescolar
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
-      - name: Checkout do código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Instalar Java 25
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
-          java-version: '25'
-          distribution: 'temurin'
+          java-version: "25"
+          distribution: temurin
+          cache: maven
 
-      - name: Build com Maven
-        run: cd Projeto-do-senai && chmod +x mvnw && ./mvnw clean package -DskipTests
+      - name: Subir a aplicacao e validar o schema
+        working-directory: Projeto-do-senai
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ocorrenciaescolar
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+          JWT_SECRET: segredo-de-ci-com-mais-de-32-caracteres-para-passar
+        run: |
+          chmod +x mvnw
+          ./mvnw -B clean package -DskipTests
+          # A aplicacao roda com ddl-auto=validate: se o Flyway produzir um schema
+          # diferente do que as entidades esperam, ela nao sobe e o job falha.
+          timeout 120 java -jar target/*.jar &
+          APP_PID=$!
+          for i in $(seq 1 40); do
+            if curl -sf http://localhost:8080/actuator/health > /dev/null; then
+              echo "Aplicacao no ar: migrations e mapeamento conferem."
+              kill $APP_PID
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "A aplicacao nao subiu — veja se as migrations batem com as entidades."
+          kill $APP_PID 2>/dev/null || true
+          exit 1

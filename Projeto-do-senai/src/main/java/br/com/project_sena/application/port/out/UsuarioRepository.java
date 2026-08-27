@@ -1,25 +1,24 @@
 package br.com.project_sena.application.port.out;
 
-import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
-import br.com.project_sena.application.core.domain.model.Usuario;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.Optional;
 
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
+import br.com.project_sena.application.core.domain.model.Usuario;
+import br.com.project_sena.application.core.domain.vo.Pagina;
+import br.com.project_sena.application.core.domain.vo.PaginaRequest;
+
 public interface UsuarioRepository {
+
     Usuario save(Usuario usuario);
 
     Optional<Usuario> findById(Long id);
 
-    Page<Usuario> findAllByUsuarioEnum(UsuarioEnum status, Pageable pageable);
+    Optional<Usuario> findByLogin(String login);
 
-    void delete(Long id);
+    boolean existsByLogin(String login);
 
-    void reativar(Long id);
+    /** @return true se outro usuario (id diferente) ja usa esse login */
+    boolean existsByLoginAndIdNot(String login, Long id);
 
-    Usuario findByEmail(String email);
-
-    Boolean existsByEmail(String email);
+    Pagina<Usuario> findByStatus(UsuarioEnum status, PaginaRequest paginaRequest);
 }

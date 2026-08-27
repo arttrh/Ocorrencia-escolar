@@ -1,138 +1,125 @@
 package br.com.project_sena.application.core.domain.model;
 
+import java.util.Objects;
+
 import br.com.project_sena.application.core.domain.enums.PerfilEnum;
 import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
-import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import br.com.project_sena.application.core.domain.exception.RegraDeNegocioException;
 
-import java.util.Collection;
-import java.util.List;
+/**
+ * Usuario do sistema.
+ *
+ * <p>POJO puro: nao implementa {@code UserDetails} nem conhece Spring Security. Quem
+ * adapta este modelo para o principal do Spring e' {@code adapter.out.security.UsuarioPrincipal}.</p>
+ */
+public class Usuario {
 
-public class Usuario implements UserDetails {
     private Long id;
     private String name;
-    private String email;
+    private String login;
     private String password;
-
-    //Enums
-    private UsuarioEnum usuarioEnum = UsuarioEnum.ATIVO;
     private PerfilEnum perfil;
+    private UsuarioEnum status;
 
-    public Usuario(Long id, String name, String email, String password, PerfilEnum perfil, UsuarioEnum usuarioEnum) {
+    public Usuario(Long id, String name, String login, String password, PerfilEnum perfil, UsuarioEnum status) {
         this.id = id;
-        this.name = name;
-        this.email = email;
+        this.name = exigirTexto(name, "Nome do usuario e' obrigatorio");
+        this.login = normalizarLogin(login);
         this.password = password;
-        this.perfil = perfil;
-        this.usuarioEnum = usuarioEnum;
+        this.perfil = Objects.requireNonNull(perfil, "Perfil do usuario e' obrigatorio");
+        this.status = status == null ? UsuarioEnum.ATIVO : status;
     }
 
-    public Usuario(String name, String email, String password, PerfilEnum perfil) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.perfil = perfil;
-    }
-
-    //UserDetails
-    @Override
-    public @Nullable String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + perfil.name()));
+    /** Construtor de cadastro: id e status sao definidos pelo sistema. */
+    public static Usuario novo(String name, String login, String password, PerfilEnum perfil) {
+        return new Usuario(null, name, login, password, perfil, UsuarioEnum.ATIVO);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public PerfilEnum getPerfil() {
         return perfil;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public UsuarioEnum getStatus() {
+        return status;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public boolean isAtivo() {
+        return status.isAtivo();
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setPerfil(PerfilEnum perfil) {
-        this.perfil = perfil;
-    }
-
-    public UsuarioEnum getUsuarioEnum() {
-        return usuarioEnum;
-    }
-
-    public void setUsuarioEnum(UsuarioEnum usuarioEnum) {
-        this.usuarioEnum = usuarioEnum;
-    }
-
-    public void atualizarUsuario(PerfilEnum perfil,
-                                 String email,
-                                 String password) {
-        if (perfil != null){
+    /** Atualizacao parcial: campos nulos ou em branco preservam o valor atual. */
+    public void atualizarDados(String name, String login, PerfilEnum perfil) {
+        if (name != null && !name.isBlank()) {
+            this.name = name.trim();
+        }
+        if (login != null && !login.isBlank()) {
+            this.login = normalizarLogin(login);
+        }
+        if (perfil != null) {
             this.perfil = perfil;
         }
-        if (email != null && !email.isBlank()){
-            this.email = email;
+    }
+
+    public void alterarPerfil(PerfilEnum perfil) {
+        this.perfil = Objects.requireNonNull(perfil, "Perfil e' obrigatorio");
+    }
+
+    /** Recebe a senha ja codificada pelo adaptador de criptografia. */
+    public void definirSenhaCodificada(String senhaCodificada) {
+        this.password = exigirTexto(senhaCodificada, "Senha e' obrigatoria");
+    }
+
+    public void inativar() {
+        this.status = UsuarioEnum.INATIVO;
+    }
+
+    public void reativar() {
+        if (isAtivo()) {
+            throw new RegraDeNegocioException("Usuario ja esta ativo");
         }
+        this.status = UsuarioEnum.ATIVO;
+    }
 
-        if (password != null && !password.isBlank()){
-            this.password = password;
+    private static String normalizarLogin(String login) {
+        return exigirTexto(login, "Login do usuario e' obrigatorio").trim().toLowerCase();
+    }
+
+    private static String exigirTexto(String valor, String mensagem) {
+        if (valor == null || valor.isBlank()) {
+            throw new RegraDeNegocioException(mensagem);
         }
+        return valor.trim();
     }
 
-    public void excluir(UsuarioEnum usuarioEnum) {
-        this.usuarioEnum = UsuarioEnum.INVATIVO;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Usuario outro)) {
+            return false;
+        }
+        return id != null && Objects.equals(id, outro.id);
     }
 
-    public void reativar(UsuarioEnum usuarioEnum){
-        this.usuarioEnum = UsuarioEnum.ATIVO;
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
-
 }
