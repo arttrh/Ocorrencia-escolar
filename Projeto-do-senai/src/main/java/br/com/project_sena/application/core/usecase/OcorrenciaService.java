@@ -247,5 +247,5 @@ public class OcorrenciaService implements OcorrenciaUseCase {
 
     private static boolean ehBranco(String valor) {
         return valor == null || valor.isBlank();
-    }
+   
 }
