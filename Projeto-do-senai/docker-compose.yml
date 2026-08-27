@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ocorrenciaescolar
-      POSGRES_USER: postgres
+      POSTGRES_USER: postgres
     ports:
       - "5433:5432"
     healthcheck:
@@ -19,12 +19,12 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: local
-      JWT_SECRET: 27032008
-      POSTGRES_PASSWORD: 27032008
+      JWT_SECRET: ${JWT_SECRET:?defina JWT_SECRET no .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
       DB_HOST: postgres
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ocorrenciaescolar
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 27032008
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
        postgres:
          condition: service_healthy
