@@ -35,15 +35,15 @@ O **Sistema de Ocorrência Escolar** é uma aplicação desenvolvida em **Java c
 - **Java 17+**
 - **Maven 3.8+**
 - **Docker e Docker Compose** (opcional)
-- **PostgreSQL 14+** (ou outro banco de dados configurado)
+- **PostgreSQL 16**
 
 ### Instalação Local
 
 #### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/rthurlucas/Sistema-de-ocorr-ncia-escolar.git
-cd Sistema-de-ocorr-ncia-escolar
+git clone https://github.com/arttrh/Ocorrencia-escolar.git
+cd Ocorrencia-escolar
 ```
 
 #### 2. Configure as variáveis de ambiente
@@ -56,8 +56,8 @@ SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/escola
 SPRING_DATASOURCE_USERNAME=seu_usuario
 SPRING_DATASOURCE_PASSWORD=sua_senha
 
-# JPA/Hibernate
-SPRING_JPA_HIBERNATE_DDL_AUTO=update
+# Autenticação
+JWT_SECRET=uma-chave-longa-e-aleatoria
 
 # Server
 SERVER_PORT=8080
@@ -137,28 +137,59 @@ Projeto-do-senai/
 
 ## 🔌 Endpoints Principais
 
+### Autenticação
+- `POST /login` - Autentica e devolve o JWT
+
 ### Turmas
 - `POST /turmas/cadastrar` - Criar nova turma
 - `GET /turmas/listar/ativo` - Listar turmas ativas
 - `GET /turmas/listar/inativo` - Listar turmas inativas
 - `GET /turmas/detalhar/{id}` - Detalhes de uma turma
 - `PUT /turmas/atualizar/{id}` - Atualizar turma
-- `DELETE /turmas/excluir/{id}` - Deletar turma
+- `DELETE /turmas/excluir/{id}` - Desativar turma
 - `PATCH /turmas/reativar/{id}` - Reativar turma
-- `POST /turmas/vincular/{id}/{id}` - Vincular aluno à turma
+- `POST /turmas/vincular/aluno/{id}` - Vincular aluno à turma
+
+### Alunos
+- `POST /aluno/cadastrar` - Cadastrar aluno
+- `GET /aluno/ativos` - Listar alunos ativos
+- `GET /aluno/inativos` - Listar alunos inativos
+- `GET /aluno/{id}` - Detalhes de um aluno
+- `PUT /aluno/atualizar/{id}` - Atualizar aluno
+- `DELETE /aluno/delete/{id}` - Desativar aluno
+- `PATCH /aluno/reativar/{id}` - Reativar aluno
+
+### Usuários
+- `POST /usuario/cadastrar` - Cadastrar usuário
+- `GET /usuario/ativos` · `GET /usuario/inativos` - Listagens
+- `GET /usuario/{id}` - Detalhes
+- `PUT /usuario/atualizar/{id}` - Atualizar
+- `DELETE /usuario/delete/{id}` - Desativar
+- `PATCH /usuario/reativar/{id}` - Reativar
+
+> Nada é apagado de verdade: `DELETE` muda o enum de status da entidade, e por
+> isso todo recurso tem listagem de ativos, de inativos e uma rota de reativação.
 
 ---
 
 ## 🔐 Autenticação
 
 O sistema implementa segurança com:
-- **Spring Security** para autenticação
-- **Rate Limiting** para proteção contra abuso
-- **Validação de entrada** em todos os endpoints
+- **Spring Security + JWT** — autenticação stateless, sem sessão no servidor
+- **Seis perfis de acesso**: `PROFESSOR`, `ANALISTA`, `COORDENADOR`, `PROFESSOR_ADMINISTRATIVO`, `ADMINISTRATIVO` e `ADMIN`
+- **Rate limiting** com Bucket4j num filtro de entrada: 5 requisições por minuto, repostas de uma vez
+- **Validação de entrada** nos DTOs de todos os endpoints
+
+Autenticação em `POST /login`, que devolve o token. As demais rotas esperam
+`Authorization: Bearer <token>`.
 
 ---
 
 ## 📊 Banco de Dados
+
+O schema é versionado com **Flyway** em `src/main/resources/db/migration` (8
+migrations), e o Hibernate roda com `ddl-auto: validate` — quem cria tabela é a
+migration, não o framework.
 
 ### Tabelas principais
 
@@ -193,7 +224,11 @@ CREATE TABLE student (
 | Spring Boot | 3.x | Framework |
 | Spring Security | 6.x | Autenticação |
 | JPA/Hibernate | 6.x | ORM |
-| PostgreSQL | 14+ | Banco de dados |
+| PostgreSQL | 16 | Banco de dados |
+| Flyway | - | Migrations versionadas |
+| Bucket4j | - | Rate limiting |
+| java-jwt | - | Emissão e validação do token |
+| springdoc-openapi | - | Swagger UI |
 | Docker | Latest | Containerização |
 | Maven | 3.8+ | Gerenciador de dependências |
 
@@ -233,6 +268,13 @@ curl http://localhost:8080/turmas/detalhar/1
 - Certifique-se de que o PostgreSQL está rodando
 - Verifique as credenciais no arquivo `.env`
 
+### Erro de validação de schema na subida
+- O `ddl-auto` é `validate`: se as tabelas não existirem, a aplicação não sobe
+- Deixe o Flyway rodar as migrations, ou derrube o volume (`docker compose down -v`) e suba de novo
+
+### Erro 429 nas requisições
+- É o rate limit: 5 requisições por minuto. Espere a janela virar.
+
 ### Erro de compilação Java
 - Limpe o cache: `mvn clean`
 - Verifique a versão do Java: `java -version`
@@ -259,12 +301,16 @@ curl http://localhost:8080/turmas/detalhar/1
 
 ### Padrões de Código
 
-Este projeto segue **Clean Architecture** com camadas bem definidas:
+Este projeto segue **arquitetura hexagonal** (ports & adapters):
 
-- **Adapter In**: Controllers e DTOs de entrada
-- **Adapter Out**: Repositórios e mapeadores
-- **Application Core**: Casos de uso e entidades de domínio
-- **Config**: Configurações globais
+- **application/core**: entidades de domínio, casos de uso e validações — não importa Spring
+- **application/port**: interfaces de entrada (o que pedem ao domínio) e de saída (o que o domínio precisa)
+- **adapter/in**: controllers REST, requests e responses
+- **adapter/out**: persistência JPA, entidades e mappers
+- **config**: security, rate limit, RabbitMQ
+
+O ponto do desenho é esse: trocar PostgreSQL por outro banco, ou REST por outro
+transporte, é mexer só em `adapter/`.
 
 ### Executar Testes
 
@@ -274,16 +320,10 @@ mvn test
 
 ---
 
-## 📄 Licença
-
-Este projeto é licenciado sob a [MIT License](LICENSE) - veja o arquivo LICENSE para mais detalhes.
-
----
-
 ## 👤 Autor
 
-**Raul Lucas**  
-GitHub: [@rthurlucas](https://github.com/rthurlucas)
+**Arthur Lucas**  
+GitHub: [@arttrh](https://github.com/arttrh)
 
 ---
 
