@@ -79,12 +79,14 @@ DROP SEQUENCE IF EXISTS type_occurrence_id_category_occurrence_seq;
 -- =========================== occurrence ====================================
 -- Data e hora viram uma unica coluna: separadas, ordenar cronologicamente exigia
 -- combinar dois campos e o front sempre tratou as duas como um instante so'.
+-- A coluna chamava-se "time", que no PostgreSQL e' nome de tipo: sem aspas o
+-- parser nao a reconhece como coluna.
 ALTER TABLE occurrence ADD COLUMN register_date TIMESTAMP;
-UPDATE occurrence SET register_date = (date_occurrence + time);
+UPDATE occurrence SET register_date = (date_occurrence + "time");
 UPDATE occurrence SET register_date = NOW() WHERE register_date IS NULL;
 ALTER TABLE occurrence ALTER COLUMN register_date SET NOT NULL;
 ALTER TABLE occurrence DROP COLUMN date_occurrence;
-ALTER TABLE occurrence DROP COLUMN time;
+ALTER TABLE occurrence DROP COLUMN "time";
 
 ALTER TABLE occurrence ADD COLUMN update_date TIMESTAMP;
 ALTER TABLE occurrence ADD COLUMN deleted BOOLEAN NOT NULL DEFAULT FALSE;

@@ -11,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +35,15 @@ public class AlunoEntity {
     @Column(name = "date_birth", nullable = false)
     private LocalDate birthDate;
 
-    /** Data URI ou URL da foto. Opcional: o cadastro do front nao envia imagem. */
-    @Lob
-    @Column(name = "image_url")
+    /**
+     * Data URI ou URL da foto. Opcional: o cadastro do front nao envia imagem.
+     *
+     * <p>Sem {@code @Lob} de proposito: no PostgreSQL o Hibernate mapeia
+     * {@code @Lob String} para large object ({@code oid}), o que nao bate com a coluna
+     * {@code TEXT} criada pela migration e faria o {@code ddl-auto: validate} recusar
+     * a subida da aplicacao.</p>
+     */
+    @Column(name = "image_url", columnDefinition = "text")
     private String imageUrl;
 
     @Enumerated(EnumType.STRING)

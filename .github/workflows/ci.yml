@@ -96,18 +96,29 @@ jobs:
         run: |
           chmod +x mvnw
           ./mvnw -B clean package -DskipTests
+
           # A aplicacao roda com ddl-auto=validate: se o Flyway produzir um schema
           # diferente do que as entidades esperam, ela nao sobe e o job falha.
-          timeout 120 java -jar target/*.jar &
+          JAR=$(ls target/*.jar | grep -v '\.original$' | head -1)
+          echo "Subindo $JAR"
+          java -jar "$JAR" > app.log 2>&1 &
           APP_PID=$!
+
           for i in $(seq 1 40); do
             if curl -sf http://localhost:8080/actuator/health > /dev/null; then
               echo "Aplicacao no ar: migrations e mapeamento conferem."
-              kill $APP_PID
+              kill $APP_PID 2>/dev/null || true
               exit 0
+            fi
+            # Se o processo morreu, nao adianta esperar o resto do tempo.
+            if ! kill -0 $APP_PID 2>/dev/null; then
+              break
             fi
             sleep 3
           done
-          echo "A aplicacao nao subiu — veja se as migrations batem com as entidades."
+
+          echo "::error::A aplicacao nao subiu. Log abaixo."
+          # Sem isto o job falhava sem dizer qual migration ou qual coluna quebrou.
+          cat app.log
           kill $APP_PID 2>/dev/null || true
           exit 1
