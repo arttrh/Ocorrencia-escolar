@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AlunoService {
-
     private AlunoRepository alunoRepository;
 
     public AlunoService(AlunoRepository alunoRepository) {
@@ -20,44 +19,44 @@ public class AlunoService {
     }
 
     @Transactional
-    public Aluno cadastrar(Aluno dados){
-       Aluno saved = alunoRepository.save(dados);
-       return saved;
+    public Aluno cadastrar(Aluno dados) {
+        Aluno saved = alunoRepository.save(dados);
+        return saved;
     }
 
-    public Aluno buscar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new RuntimeException("Aluno nao encontrado"));
+    public Aluno buscar(Long id) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(
+            () -> new AlunoNotFoundException("Aluno nao encontrado"));
         return aluno;
     }
 
-    public Page<Aluno> listarAtivos(Pageable paginacao){
+    public Page<Aluno> listarAtivos(Pageable paginacao) {
         return alunoRepository.findByAlunoEnum(paginacao, AlunoEnum.ATIVO);
     }
 
-    public Page<Aluno> listarInativos(Pageable paginacao){
+    public Page<Aluno> listarInativos(Pageable paginacao) {
         return alunoRepository.findByAlunoEnum(paginacao, AlunoEnum.INVATIVO);
     }
 
     @Transactional
-    public Aluno atualizar(Long id, Aluno aluno){
-        Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
-        aluno.atualizarAluno(
-                aluno.getPhoto(),
-                aluno.getName(),
-                aluno.getDateBirth()
-        );
-        return alunoRepository.save(aluno);
+    public Aluno atualizar(Long id, Aluno aluno) {
+        Aluno alunoBuscar = alunoRepository.findById(id).orElseThrow(
+            () -> new AlunoNotFoundException("Aluno nao encontrado"));
+        alunoBuscar.atualizarAluno(aluno.getPhoto(), aluno.getName(), aluno.getDateBirth());
+        return alunoRepository.save(alunoBuscar);
     }
 
-    public void excluir(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao Encontrado"));
+    public void excluir(Long id) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(
+            () -> new AlunoNotFoundException("Aluno nao Encontrado"));
         aluno.excluir();
         alunoRepository.save(aluno);
     }
 
-    public Aluno reativar(Long id){
-        Aluno aluno = alunoRepository.findById(id).orElseThrow(() -> new AlunoNotFoundException("Aluno nao encontrado"));
-        if (aluno.getAlunoEnum() == AlunoEnum.ATIVO){
+    public Aluno reativar(Long id) {
+        Aluno aluno = alunoRepository.findById(id).orElseThrow(
+            () -> new AlunoNotFoundException("Aluno nao encontrado"));
+        if (aluno.getAlunoEnum() == AlunoEnum.ATIVO) {
             throw new AlunoExistingException("Aluno ja esta Ativo");
         }
         aluno.reativar();

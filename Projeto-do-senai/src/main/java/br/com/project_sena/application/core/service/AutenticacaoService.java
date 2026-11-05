@@ -1,6 +1,6 @@
 package br.com.project_sena.application.core.service;
-
 import br.com.project_sena.adapter.in.controller.request.email.EmailDTO;
+import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
 import br.com.project_sena.config.security.service.TokenDTO;
@@ -8,6 +8,7 @@ import br.com.project_sena.config.security.service.TokenService;
 import br.com.project_sena.exception.type.EmailESenha.EmailDuplicadoException;
 import br.com.project_sena.exception.type.EmailESenha.SenhaException;
 import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,7 +21,8 @@ public class AutenticacaoService implements UserDetailsService {
     private final PasswordEncoder encoder;
     private final TokenService service;
 
-    public AutenticacaoService(UsuarioRepository usuarioRepository, PasswordEncoder encoder, TokenService service) {
+    public AutenticacaoService(
+        UsuarioRepository usuarioRepository, PasswordEncoder encoder, TokenService service) {
         this.usuarioRepository = usuarioRepository;
         this.encoder = encoder;
         this.service = service;
@@ -34,14 +36,16 @@ public class AutenticacaoService implements UserDetailsService {
     public TokenDTO logar(EmailDTO dto) throws EmailDuplicadoException {
         try {
             Usuario usuario = usuarioRepository.findByEmail(dto.email());
+            if (usuario.getUsuarioEnum() != UsuarioEnum.ATIVO)
+                throw new BadCredentialsException("Credenciais inválidas");
             boolean senhaCorreta = encoder.matches(dto.password(), usuario.getPassword());
             if (!senhaCorreta) {
-                throw new SenhaException("Senha invalida por favor digite novamente");
+                throw new BadCredentialsException("Credenciais inválidas");
             }
             return service.gerarToken(usuario);
 
         } catch (UsuarioNotFoundException ex) {
-            throw new UsuarioNotFoundException("Usuario Nao encontrado por esse Login");
+            throw new BadCredentialsException("Credenciais inválidas");
         }
     }
 }

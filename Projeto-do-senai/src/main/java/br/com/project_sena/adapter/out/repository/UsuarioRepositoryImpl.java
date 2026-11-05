@@ -7,15 +7,13 @@ import br.com.project_sena.application.core.domain.enums.UsuarioEnum;
 import br.com.project_sena.application.core.domain.model.Usuario;
 import br.com.project_sena.application.port.out.UsuarioRepository;
 import br.com.project_sena.exception.type.Usuario.UsuarioNotFoundException;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 public class UsuarioRepositoryImpl implements UsuarioRepository {
-
     private final UsuarioJpaRepository jpaRepository;
     private final UsuarioMapperEntity mapperEntity;
 
@@ -38,20 +36,21 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
 
     @Override
     public Page<Usuario> findAllByUsuarioEnum(UsuarioEnum status, Pageable pageable) {
-        return jpaRepository.findAllByUsuarioEnum(status, pageable)
-                .map(mapperEntity::toDomain);
+        return jpaRepository.findAllByUsuarioEnum(status, pageable).map(mapperEntity::toDomain);
     }
 
     @Override
     public void delete(Long id) {
-        UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(() -> new RuntimeException("ID do usuario nao encontrado: " + id));
+        UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(
+            () -> new RuntimeException("ID do usuario nao encontrado: " + id));
         entity.setUsuarioEnum(UsuarioEnum.INVATIVO);
         jpaRepository.save(entity);
     }
 
     @Override
     public void reativar(Long id) {
-        UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(() -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
+        UsuarioEntity entity = jpaRepository.findById(id).orElseThrow(
+            () -> new UsuarioNotFoundException("ID do usuario nao encontrado: " + id));
         entity.setUsuarioEnum(UsuarioEnum.ATIVO);
         jpaRepository.save(entity);
     }
@@ -59,8 +58,8 @@ public class UsuarioRepositoryImpl implements UsuarioRepository {
     @Override
     public Usuario findByEmail(String email) {
         return jpaRepository.findByEmail(email)
-                .map(mapperEntity::toDomain)
-                .orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+            .map(mapperEntity::toDomain)
+            .orElseThrow(() -> new UsuarioNotFoundException("Usuario nao encontrado"));
     }
 
     @Override

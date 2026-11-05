@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: ${TEST_DATABASE_URL:jdbc:postgresql://localhost:5549/ocorrencia_test}
+    username: ${TEST_DATABASE_USERNAME:arttrh}
+    password: ${TEST_DATABASE_PASSWORD:}
+JWT_SECRET: chave-exclusiva-para-testes-locais-com-32-caracteres

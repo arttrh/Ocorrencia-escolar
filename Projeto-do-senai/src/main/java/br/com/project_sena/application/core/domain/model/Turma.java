@@ -1,111 +1,112 @@
-    package br.com.project_sena.application.core.domain.model;
+package br.com.project_sena.application.core.domain.model;
+import br.com.project_sena.application.core.domain.enums.TurmaEnum;
+import br.com.project_sena.application.core.domain.enums.TurmaTurnoEnum;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-    import br.com.project_sena.application.core.domain.enums.TurmaEnum;
-    import br.com.project_sena.application.core.domain.enums.TurmaTurnoEnum;
+public class Turma {
+    private Long id;
+    private String className;
+    private LocalDateTime classYear;
+    private LocalDateTime semestry;
+    private final Integer turmaCheia = 36;
 
-    import java.time.LocalDateTime;
-    import java.util.List;
+    // Enums
+    private TurmaEnum turmaEnum = TurmaEnum.ATIVA;
+    private TurmaTurnoEnum turmaTurnoEnum;
 
-    public class Turma {
+    private List<Aluno> aluno = new ArrayList<>();
 
-        private Long id;
-        private String className;
-        private LocalDateTime classYear;
-        private LocalDateTime semestry;
-        private final Integer turmaCheia = 36;
+    public Turma() {
+    }
 
-        //Enums
-        private TurmaEnum turmaEnum;
-        private TurmaTurnoEnum turmaTurnoEnum;
+    public Turma(Long id, String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear,
+        TurmaEnum turmaEnum, LocalDateTime semestry) {
+        this.id = id;
+        this.className = className;
+        this.turmaTurnoEnum = turnoTurma;
+        this.classYear = classYear;
+        this.turmaEnum = turmaEnum;
+        this.semestry = semestry;
+    }
 
-        private List<Aluno> aluno;
+    public Turma(
+        String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, LocalDateTime semestry) {
+        this.className = className;
+        this.classYear = classYear;
+        this.turmaTurnoEnum = turnoTurma;
+        this.semestry = semestry;
+    }
 
-        public Turma() {
-        }
+    public Turma(String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum,
+        LocalDateTime semestry) {
+        this.className = className;
+        this.classYear = classYear;
+        this.turmaEnum = turmaEnum;
+        this.turmaTurnoEnum = turnoTurma;
+        this.semestry = semestry;
+    }
 
-        public Turma(Long id, String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
-            this.id = id;
+    public Long getId() {
+        return id;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public LocalDateTime getClassYear() {
+        return classYear;
+    }
+
+    public TurmaEnum getTurmaEnum() {
+        return turmaEnum;
+    }
+
+    public TurmaTurnoEnum getTurmaTurnoEnum() {
+        return turmaTurnoEnum;
+    }
+
+    public LocalDateTime getSemestry() {
+        return semestry;
+    }
+
+    public List<Aluno> getAluno() {
+        return aluno;
+    }
+
+    public void setAluno(List<Aluno> aluno) {
+        this.aluno = aluno;
+    }
+
+    public Integer getTurmaCheia() {
+        return turmaCheia;
+    }
+
+    public void atualizarTurma(String className, TurmaTurnoEnum turmaTurnoEnum, LocalDateTime classYear,
+        TurmaEnum turmaEnum, LocalDateTime semestry) {
+        if (className != null && !className.isBlank()) {
             this.className = className;
-            this.turmaTurnoEnum = turnoTurma;
+        }
+        if (turmaTurnoEnum != null) {
+            this.turmaTurnoEnum = turmaTurnoEnum;
+        }
+        if (classYear != null) {
             this.classYear = classYear;
-            this.turmaEnum = TurmaEnum.ATIVA;
+        }
+        if (semestry != null)
             this.semestry = semestry;
-        }
-
-        public Turma(String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, LocalDateTime semestry) {
-            this.className = className;
-            this.classYear = classYear;
-            this.turmaTurnoEnum = turnoTurma;
-            this.semestry = semestry;
-        }
-
-        public Turma(String className, TurmaTurnoEnum turnoTurma, LocalDateTime classYear, TurmaEnum turmaEnum, LocalDateTime semestry) {
-            this.className = className;
-            this.classYear = classYear;
+        if (turmaEnum != null) {
             this.turmaEnum = turmaEnum;
-            this.turmaTurnoEnum = turnoTurma;
-            this.semestry = semestry;
-        }
-
-        public Long getId() {
-            return id;
-        }
-
-        public String getClassName() {
-            return className;
-        }
-
-        public LocalDateTime getClassYear() {
-            return classYear;
-        }
-
-        public TurmaEnum getTurmaEnum() {
-            return turmaEnum;
-        }
-
-        public TurmaTurnoEnum getTurmaTurnoEnum() {
-            return turmaTurnoEnum;
-        }
-
-        public LocalDateTime getSemestry() {
-            return semestry;
-        }
-
-        public List<Aluno> getAluno() {
-            return aluno;
-        }
-
-        public void setAluno(List<Aluno> aluno) {
-            this.aluno = aluno;
-        }
-
-        public Integer getTurmaCheia() {
-            return turmaCheia;
-        }
-
-        public void atualizarTurma(String className,
-                                   TurmaTurnoEnum turmaTurnoEnum,
-                                   LocalDateTime classYear,
-                                   TurmaEnum turmaEnum){
-            if (className != null && !className.isBlank()){
-                this.className = className;
-            }
-           if (turmaTurnoEnum != null){
-               this.turmaTurnoEnum = turmaTurnoEnum;
-           }
-            if (classYear != null){
-                this.classYear = classYear;
-            }
-            if (turmaEnum != null){
-                this.turmaEnum = turmaEnum;
-            }
-        }
-
-        public void excluir(){
-            this.turmaEnum = TurmaEnum.CANCELADA;
-        }
-
-        public void reativar(){
-            this.turmaEnum = TurmaEnum.ATIVA;
         }
     }
+
+    public void excluir() {
+        this.turmaEnum = TurmaEnum.CANCELADA;
+    }
+
+    public void reativar() {
+        this.turmaEnum = TurmaEnum.ATIVA;
+    }
+}

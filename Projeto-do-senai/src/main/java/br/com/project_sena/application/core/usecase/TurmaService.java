@@ -3,8 +3,6 @@ package br.com.project_sena.application.core.usecase;
 import br.com.project_sena.application.core.domain.enums.TurmaEnum;
 import br.com.project_sena.application.core.domain.model.Aluno;
 import br.com.project_sena.application.core.domain.model.Turma;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarOcorrencia;
-import br.com.project_sena.application.core.usecase.validacoes.ValidarTurmaCheia;
 import br.com.project_sena.application.core.usecase.validacoes.ValidarVinculo;
 import br.com.project_sena.application.port.out.TurmaRepository;
 import br.com.project_sena.exception.type.Turma.TurmaNotFoundException;
@@ -13,68 +11,62 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class TurmaService{
-
+public class TurmaService {
     private final TurmaRepository repository;
     private final ValidarVinculo validarVinculo;
-    private final ValidarTurmaCheia turmaCheia;
 
-    public TurmaService(TurmaRepository repository, ValidarVinculo validarVinculo, ValidarTurmaCheia turmaCheia, ValidarOcorrencia validarOcorrencia) {
+    public TurmaService(TurmaRepository repository, ValidarVinculo validarVinculo) {
         this.repository = repository;
         this.validarVinculo = validarVinculo;
-        this.turmaCheia = turmaCheia;
     }
 
     @Transactional
-    public void vincularAlunoTurma(Turma turma, Aluno aluno){
-        validarVinculo.validar(aluno, turma);
-        turmaCheia.validar(aluno, turma);
+    public void vincularAlunoTurma(Turma turma, Aluno aluno) {
+        validarVinculo.validarTurmaEAluno(aluno, turma);
+        repository.vincularAluno(turma.getId(), aluno.getId());
     }
 
     @Transactional
-    public Turma cadastrar(Turma turma, Aluno aluno){
+    public Turma cadastrar(Turma turma) {
         Turma saved = repository.save(turma);
-        turmaCheia.validar(aluno, turma);
         return saved;
     }
 
-    public Turma buscar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
+    public Turma buscar(Long id) {
+        Turma turma =
+            repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
         return turma;
     }
 
-    public Page<Turma> listarTurmasAtivas(Pageable pageable){
+    public Page<Turma> listarTurmasAtivas(Pageable pageable) {
         return repository.findByTurmaEnum(pageable, TurmaEnum.ATIVA);
     }
 
-    public Page <Turma> listarTurmasCanceladas(Pageable pageable){
+    public Page<Turma> listarTurmasCanceladas(Pageable pageable) {
         return repository.findByTurmaEnum(pageable, TurmaEnum.CANCELADA);
     }
 
-    public Turma atualizarTurma(Turma dados, Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
-        turma.atualizarTurma(
-                dados.getClassName(),
-                dados.getTurmaTurnoEnum(),
-                dados.getClassYear(),
-                dados.getTurmaEnum()
-        );
+    public Turma atualizarTurma(Turma dados, Long id) {
+        Turma turma =
+            repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
+        turma.atualizarTurma(dados.getClassName(), dados.getTurmaTurnoEnum(), dados.getClassYear(),
+            turma.getTurmaEnum(), dados.getSemestry());
         return repository.save(turma);
     }
 
-    public void deletar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
+    public void deletar(Long id) {
+        Turma turma =
+            repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
         turma.excluir();
         repository.save(turma);
     }
 
-    public Turma reativar(Long id){
-        Turma turma = repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
+    public Turma reativar(Long id) {
+        Turma turma =
+            repository.findById(id).orElseThrow(() -> new TurmaNotFoundException("Turma nao existe"));
         turma.reativar();
-       Turma saved = repository.save(turma);
+        Turma saved = repository.save(turma);
         return saved;
     }
-
 }

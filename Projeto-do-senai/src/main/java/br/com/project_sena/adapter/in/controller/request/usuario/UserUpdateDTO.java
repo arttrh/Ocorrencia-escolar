@@ -5,13 +5,5 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UserUpdateDTO(
-        @Email
-        @NotBlank
-        String email,
-        @NotBlank
-        String password,
-        @NotNull
-        PerfilEnum perfil
-) {
-}
+public record
+    UserUpdateDTO(String name, @Email @NotBlank String email, String password, @NotNull PerfilEnum perfil) {}
