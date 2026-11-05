@@ -3,7 +3,7 @@ server:
   shutdown: graceful
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/ocorrenciaescolar}
+    url: ${DATABASE_URL:jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:ocorrenciaescolar}}
     username: ${DATABASE_USERNAME:postgres}
     password: ${DATABASE_PASSWORD:${POSTGRES_PASSWORD:}}
     hikari:

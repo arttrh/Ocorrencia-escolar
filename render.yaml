@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: ocorrencia-escolar-api-arttrh
+    runtime: docker
+    region: virginia
+    plan: free
+    branch: dev
+    dockerfilePath: ./Projeto-do-senai/Dockerfile
+    dockerContext: ./Projeto-do-senai
+    healthCheckPath: /health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: database
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: ocorrencia-escolar-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: admin@ocorrencia.local
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: CORS_ALLOWED_ORIGINS
+        value: https://ocorrencia-escolar-arttrh.vercel.app
+
+databases:
+  - name: ocorrencia-escolar-db
+    databaseName: ocorrencia_escolar_db
+    user: ocorrencia_escolar_db_user
+    postgresMajorVersion: '18'
+    region: virginia
+    plan: free
+    ipAllowList: []
