@@ -1,5 +1,6 @@
 package br.com.project_sena.adapter.in.controller;
 import br.com.project_sena.adapter.in.controller.request.usuario.UserRegisterDTO;
+import br.com.project_sena.adapter.in.controller.request.usuario.PublicUserRegisterDTO;
 import br.com.project_sena.adapter.in.controller.request.usuario.UserUpdateDTO;
 import br.com.project_sena.adapter.in.controller.response.UserDetailsDTO;
 import br.com.project_sena.adapter.in.controller.response.UserListAtivosDTO;
@@ -46,6 +47,15 @@ public class UsuarioController implements UsuarioDomainController<UserRegisterDT
     }
     public record
         AlterarSenha(@NotBlank String oldPassword, @Size(min = 8, max = 72) @NotBlank String newPassword) {}
+
+    @PostMapping("/cadastro")
+    public ResponseEntity<UserDetailsDTO> cadastroPublico(
+        @RequestBody @Valid PublicUserRegisterDTO dto, UriComponentsBuilder uriBuilder) {
+        Usuario salvo = usuarioService.cadastrar(
+            new Usuario(dto.name(), dto.email(), dto.password(), PerfilEnum.PROFESSOR));
+        URI uri = uriBuilder.path("/usuario/{id}").buildAndExpand(salvo.getId()).toUri();
+        return ResponseEntity.created(uri).body(mapper.toDTO(salvo));
+    }
 
     @PostMapping("/cadastrar")
     public ResponseEntity<UserDetailsDTO> cadastrar(

@@ -112,6 +112,16 @@ class FluxoApiTest {
     @Test
     void seguranca() throws Exception {
         mvc.perform(get("/health")).andExpect(status().isOk());
+        mvc.perform(post("/usuario/cadastro")
+                        .contentType("application/json")
+                        .content("{\"name\":\"Professor\",\"email\":\"professor@teste.com\","
+                                 + "\"password\":\"Senha-segura-123\"}"))
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.perfil").value("PROFESSOR"));
+        mvc.perform(post("/login")
+                        .contentType("application/json")
+                        .content("{\"email\":\"professor@teste.com\",\"password\":\"Senha-segura-123\"}"))
+            .andExpect(status().isOk());
         mvc.perform(get("/aluno/ativos")).andExpect(status().isUnauthorized());
         mvc.perform(get("/aluno/ativos").header("Authorization", "Bearer invalido"))
             .andExpect(status().isUnauthorized());
